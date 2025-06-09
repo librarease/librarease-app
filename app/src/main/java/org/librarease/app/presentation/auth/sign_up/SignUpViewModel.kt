@@ -26,6 +26,9 @@ class SignUpViewModel @Inject constructor(
 
     private val _password = MutableStateFlow(TextFieldValue(EMPTY_STRING))
     val password: StateFlow<TextFieldValue> = _password.asStateFlow()
+    
+    private val _fullName = MutableStateFlow(TextFieldValue(EMPTY_STRING))
+    val fullName: StateFlow<TextFieldValue> = _fullName.asStateFlow()
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
@@ -43,12 +46,20 @@ class SignUpViewModel @Inject constructor(
     fun onPasswordChange(newPsw: TextFieldValue) {
         _password.value = newPsw
     }
+    
+    fun onFullNameChange(newFullName: TextFieldValue) {
+        _fullName.value = newFullName
+    }
 
-    fun onSignUpWithEmailAndPassword(email: String, password: String) = viewModelScope.launch {
+    fun onSignUpWithEmailAndPassword(email: String, password: String, fullName: String) = viewModelScope.launch {
         _isLoading.value = true
         try {
             _signUpState.value = Resource.Loading
-            _signUpState.value = Resource.Success(repository.signUpWithEmailAndPassword(email, password))
+            // For now, we're still using the existing repository method that doesn't use fullName
+            // In a real implementation, you'd want to update the repository to store the full name
+            val result = repository.signUpWithEmailAndPassword(email, password)
+            // TODO: Store the full name in the user profile after successful sign-up
+            _signUpState.value = Resource.Success(result)
         } catch (e: Exception) {
             _signUpState.value = Resource.Failure(e)
             _isLoading.value = false

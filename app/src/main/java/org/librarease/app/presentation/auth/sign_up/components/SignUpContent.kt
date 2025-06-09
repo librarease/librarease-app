@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -47,12 +49,15 @@ fun SignUpContent(
     password: TextFieldValue,
     onPasswordChange: (TextFieldValue) -> Unit,
     onPasswordInvalid: () -> Unit,
-    onSignUpClick: (String, String) -> Unit,
+    fullName: TextFieldValue,
+    onFullNameChange: (TextFieldValue) -> Unit,
+    onFullNameInvalid: () -> Unit,
+    onTermsNotAccepted: () -> Unit,
+    onSignUpClick: (String, String, String) -> Unit,
     isLoading: Boolean,
     onSignInTextClick: () -> Unit
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
-    var fullName by remember { mutableStateOf(TextFieldValue("")) }
     var agreeToTerms by remember { mutableStateOf(false) }
     
     Column(
@@ -67,12 +72,12 @@ fun SignUpContent(
             imageVector = Icons.Filled.MenuBook,
             contentDescription = "Librarease Logo",
             modifier = Modifier.size(80.dp),
-            tint = MaterialTheme.colorScheme.primary
+            tint = colorResource(R.color.primary)
         )
         
         Text(
             text = "Librarease",
-            color = MaterialTheme.colorScheme.primary,
+            color = colorResource(R.color.primary),
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 8.dp)
@@ -88,7 +93,7 @@ fun SignUpContent(
         
         Text(
             text = "Create Account",
-            color = MaterialTheme.colorScheme.primary,
+            color =  colorResource(R.color.primary),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
@@ -99,18 +104,26 @@ fun SignUpContent(
         // Full Name Field
         OutlinedTextField(
             value = fullName,
-            onValueChange = { fullName = it },
+            onValueChange = onFullNameChange,
             label = { Text("Full Name") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.Person,
+                    contentDescription = "Person Icon",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
         )
         
         Spacer(modifier = Modifier.height(12.dp))
         
         EmailField(
             email = email,
-            onEmailChange = onEmailChange
+            onEmailChange = onEmailChange,
+            autoFocus = true
         )
         
         Spacer(modifier = Modifier.height(12.dp))
@@ -144,24 +157,24 @@ fun SignUpContent(
             onActionButtonClick = {
                 val isEmailValid = email.text.isNotBlank()
                 val isPasswordValid = password.text.isNotBlank()
-                val isNameValid = fullName.text.isNotBlank()
+                val isFullNameValid = fullName.text.isNotBlank()
+                val isTermsAccepted = agreeToTerms
                 
-                if (!isNameValid) {
-                    // Handle name validation
-                } else if (!isEmailValid) {
+                if (!isEmailValid) {
                     onEmailInvalid()
                 } else if (!isPasswordValid) {
                     onPasswordInvalid()
-                } else if (!agreeToTerms) {
-                    // Handle terms agreement validation
+                } else if (!isFullNameValid) {
+                    onFullNameInvalid()
+                } else if (!isTermsAccepted) {
+                    onTermsNotAccepted()
                 } else {
-                    // For now, we're still using the existing sign-up function
-                    // In a real implementation, you'd want to pass the full name too
-                    onSignUpClick(email.text, password.text)
+                    onSignUpClick(email.text, password.text, fullName.text)
                     keyboard?.hide()
                 }
             },
             enabled = !isLoading,
+            isLoading = isLoading,
             resourceId = R.string.sign_up_button
         )
         
@@ -178,7 +191,8 @@ fun SignUpContent(
             )
             ActionText(
                 onActionTextClick = onSignInTextClick,
-                resourceId = R.string.sign_in_button
+                resourceId = R.string.sign_in_button,
+                modifier = Modifier
             )
         }
     }

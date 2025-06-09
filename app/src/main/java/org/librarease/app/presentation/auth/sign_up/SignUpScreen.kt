@@ -38,6 +38,7 @@ fun SignUpScreen(
     val context = LocalContext.current
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
+    val fullName by viewModel.fullName.collectAsState()
     val signUpResponse by viewModel.signUpState.collectAsState()
     val emailVerificationResponse by viewModel.emailVerificationState.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -80,9 +81,19 @@ fun SignUpScreen(
                     onPasswordInvalid = {
                         showToastMessage(context, invalidPasswordMessage)
                     },
-                    onSignUpClick = viewModel::onSignUpWithEmailAndPassword,
+                    fullName = fullName,
+                    onFullNameChange = viewModel::onFullNameChange,
+                    onFullNameInvalid = {
+                        showToastMessage(context, "Please enter your full name")
+                    },
+                    onTermsNotAccepted = {
+                        showToastMessage(context, "Please accept the terms and conditions")
+                    },
+                    onSignUpClick = { email, password, fullName ->
+                        viewModel.onSignUpWithEmailAndPassword(email, password, fullName)
+                    },
                     isLoading = isLoading,
-                    onSignInTextClick = navigateBack,
+                    onSignInTextClick = navigateBack
                 )
             }
         }
@@ -91,48 +102,57 @@ fun SignUpScreen(
     // Handle the Sign-Up state response
     when (val signUpResponse = signUpResponse) {
         is Resource.Idle -> {
-            // No action needed in idle state
         }
         is Resource.Loading -> {
-            // Show loading indicator during sign-up
-            LoadingIndicator()
+
         }
         is Resource.Success -> {
             LaunchedEffect(Unit) {
                 showToastMessage(context, accountCreatedMessage)
-                viewModel.sendEmailVerification() // Send email verification after successful sign-up
+                viewModel.sendEmailVerification()
             }
         }
         is Resource.Failure -> {
             signUpResponse.e?.message?.let { errorMessage ->
                 LaunchedEffect(errorMessage) {
                     logErrorMessage(errorMessage)
-                    showToastMessage(context, errorMessage)
+                    val userFriendlyMessage = when {
+                        errorMessage.contains("email", ignoreCase = true) && errorMessage.contains("use", ignoreCase = true) -> 
+                            "This email is already in use. Please try signing in instead."
+                        errorMessage.contains("password", ignoreCase = true) -> 
+                            "Password is too weak. Please use a stronger password."
+                        errorMessage.contains("network", ignoreCase = true) -> 
+                            "Network error. Please check your connection."
+                        else -> errorMessage
+                    }
+                    showToastMessage(context, userFriendlyMessage)
                 }
             }
         }
     }
 
-    // Handle the email verification state response
     when (val emailVerificationResponse = emailVerificationResponse) {
         is Resource.Idle -> {
-            // No action needed in idle state
         }
         is Resource.Loading -> {
-            // Show loading indicator during email verification
-            LoadingIndicator()
+
         }
         is Resource.Success -> {
             LaunchedEffect(Unit) {
                 showToastMessage(context, emailVerificationSentMessage)
-                navigateAndClear(Route.VerifyEmail) // Navigate to Verify Email screen on success
+                navigateAndClear(Route.VerifyEmail)
             }
         }
         is Resource.Failure -> {
             emailVerificationResponse.e?.message?.let { errorMessage ->
                 LaunchedEffect(errorMessage) {
                     logErrorMessage(errorMessage)
-                    showToastMessage(context, errorMessage)
+                    val userFriendlyMessage = when {
+                        errorMessage.contains("network", ignoreCase = true) -> 
+                            "Network error. Please check your connection."
+                        else -> "Failed to send verification email. Please try again later."
+                    }
+                    showToastMessage(context, userFriendlyMessage)
                 }
             }
         }

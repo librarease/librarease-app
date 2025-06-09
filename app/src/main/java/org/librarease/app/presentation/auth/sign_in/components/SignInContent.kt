@@ -1,6 +1,5 @@
 package org.librarease.app.presentation.auth.sign_in.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.librarease.app.R
 import org.librarease.app.common.ActionButton
-import org.librarease.app.common.ActionIconButton
 import org.librarease.app.common.ActionText
 import org.librarease.app.common.EmailField
 import org.librarease.app.common.PasswordField
@@ -62,12 +61,12 @@ fun SignInContent(
             imageVector = Icons.Filled.MenuBook,
             contentDescription = "Librarease Logo",
             modifier = Modifier.size(80.dp),
-            tint = MaterialTheme.colorScheme.primary
+            tint = colorResource(R.color.primary)
         )
         
         Text(
             text = "Librarease",
-            color = MaterialTheme.colorScheme.primary,
+            color = colorResource(R.color.primary),
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 8.dp)
@@ -83,7 +82,7 @@ fun SignInContent(
         
         Text(
             text = "Sign In",
-            color = MaterialTheme.colorScheme.primary,
+            color = colorResource(R.color.primary),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
@@ -93,7 +92,8 @@ fun SignInContent(
         
         EmailField(
             email = email,
-            onEmailChange = onEmailChange
+            onEmailChange = onEmailChange,
+            autoFocus = true
         )
         
         Spacer(modifier = Modifier.height(12.dp))
@@ -128,6 +128,7 @@ fun SignInContent(
                 }
             },
             enabled = !isLoading,
+            isLoading = isLoading,
             resourceId = R.string.sign_in_button
         )
         

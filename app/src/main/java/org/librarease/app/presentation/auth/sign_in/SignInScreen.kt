@@ -99,8 +99,8 @@ fun SignInScreen(
                 // No action required
             }
             is Resource.Loading -> {
-                // Show loading indicator while signing in
-                LoadingIndicator()
+                // Loading state is now handled by the ActionButton component
+                // We don't need to show a separate loading indicator
             }
             is Resource.Success -> {
                 // Navigate after sign-in is successful
@@ -116,7 +116,14 @@ fun SignInScreen(
                 response.e?.message?.let { errorMessage ->
                     LaunchedEffect(errorMessage) {
                         logErrorMessage(errorMessage)
-                        showToastMessage(context, errorMessage)
+                        // Show a more user-friendly error message
+                        val userFriendlyMessage = when {
+                            errorMessage.contains("password", ignoreCase = true) -> "Incorrect password. Please try again."
+                            errorMessage.contains("user", ignoreCase = true) -> "User not found. Please check your email or sign up."
+                            errorMessage.contains("network", ignoreCase = true) -> "Network error. Please check your connection."
+                            else -> errorMessage
+                        }
+                        showToastMessage(context, userFriendlyMessage)
                     }
                 }
             }
