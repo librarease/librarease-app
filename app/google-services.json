@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "329808199046",
+    "project_id": "librarease-dev",
+    "storage_bucket": "librarease-dev.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:329808199046:android:62ea25fce1c0cfd424c007",
+        "android_client_info": {
+          "package_name": "org.librarease.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_fMSOSSrvf3HFDoIgB_-igmsw521PYRg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
