@@ -22,13 +22,13 @@ import org.librarease.app.presentation.profile.ProfileViewmodel
 @Composable
 fun AppNavGraph(
     navController: NavHostController = rememberNavController(),
-    startDestination: Route = Route.Profile
+    startDestination: Route = Route.Main
 ) {
     NavHost(
         navController = navController,
         startDestination = startDestination.route
     ) {
-        composable(Route.Profile.route) {
+        composable(Route.Main.route) {
             val viewModel: ProfileViewmodel = hiltViewModel()
             ProfileScreen(
                 viewmodel = viewModel,
