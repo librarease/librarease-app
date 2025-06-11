@@ -1,9 +1,7 @@
 package org.librarease.app.presentation.main.components
 
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
+
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,8 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,11 +36,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import org.librarease.app.R
-import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.ui.draw.clip
 import org.librarease.app.domain.model.BookItem
+import org.librarease.app.domain.model.Library
 
 
 @Composable
@@ -59,7 +53,11 @@ fun MainContent(
     val bookItems = List(10) { index ->
         BookItem("Book ${index + 1}", "Author ${index + 1}")
     }
-    val lazyRowState = rememberLazyListState()
+    val libraryItems = List(6) { index ->
+        Library("A Lin Yaung ${index + 1}")
+    }
+    val bookRowState = rememberLazyListState()
+    val libraryRowState = rememberLazyListState()
 
     Box(
         modifier = Modifier
@@ -126,13 +124,35 @@ fun MainContent(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(start = 16.dp, top = 8.dp)
             )
-
             LazyBookRow(
-                lazyRowState = lazyRowState,
+                lazyRowState = bookRowState,
                 modifier = Modifier,
                 itemList = bookItems
             )
             Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Libraries",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 16.dp, top = 8.dp)
+            )
+            LazyLibraryRow(
+                lazyRowState = libraryRowState,
+                modifier = Modifier,
+                itemList = libraryItems
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Libraries",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 16.dp, top = 8.dp)
+            )
+            LazyLibraryRow(
+                lazyRowState = libraryRowState,
+                modifier = Modifier,
+                itemList = libraryItems
+            )
         }
 
         if (!isUserSignIn) {
