@@ -42,7 +42,6 @@ import org.librarease.app.R
 fun MainAppBar(
     isUserSignIn: Boolean,
     signOut: () -> Unit,
-    deleteUser: () -> Unit,
     onLoginClick: () -> Unit,
     onSignUpClick: () -> Unit
 ) {
@@ -82,15 +81,6 @@ fun MainAppBar(
                         },
                         text = {
                             Text(text = stringResource(id = R.string.sign_out))
-                        }
-                    )
-                    DropdownMenuItem(
-                        onClick = {
-                            deleteUser()
-                            openMenu = false
-                        },
-                        text = {
-                            Text(text = stringResource(id = R.string.delete_user))
                         }
                     )
                 }

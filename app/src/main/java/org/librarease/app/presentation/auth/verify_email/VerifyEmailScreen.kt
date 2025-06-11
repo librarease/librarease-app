@@ -1,5 +1,6 @@
 package org.librarease.app.presentation.auth.verify_email
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,39 +28,36 @@ fun VerifyEmailScreen(
     val isEmailVerified by viewModel.isEmailVerifiedState.collectAsState()
     val emailNotVerifiedMessage = stringResource(R.string.email_not_verified_message)
 
-    // Scaffold to hold the top bar and content
+    BackHandler {
+        navigateAndClear(Route.SignIn)
+    }
+
     Scaffold(
         topBar = {
             VerifyEmailAppBar()
         }
     ) { innerPadding ->
-        // Content of the screen with a callback to reload the user on click
         VerifyEmailContent(
             innerPadding = innerPadding,
             onAlreadyVerifiedTextClick = viewModel::reloadUser, // Trigger reloading of user data
         )
 
-        // Handle different states of reload user response
         when (val reloadUserResponse = reloadUserResponse) {
             is Resource.Idle -> {
-                // No action needed when idle
             }
             is Resource.Loading -> {
-                // Show loading indicator while reloading user data
                 LoadingIndicator()
             }
             is Resource.Success -> {
                 LaunchedEffect(Unit) {
-                    // Navigate to Profile screen if email is verified, otherwise show error message
                     if (isEmailVerified) {
-                        navigateAndClear(Route.Profile)
+                        navigateAndClear(Route.Main)
                     } else {
                         showToastMessage(context, emailNotVerifiedMessage)
                     }
                 }
             }
             is Resource.Failure -> {
-                // Show error message if reload user fails
                 reloadUserResponse.e?.message?.let { errorMessage ->
                     LaunchedEffect(errorMessage) {
                         logErrorMessage(errorMessage)

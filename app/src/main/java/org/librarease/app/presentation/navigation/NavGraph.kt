@@ -15,6 +15,8 @@ import org.librarease.app.presentation.auth.sign_up.SignUpScreen
 import org.librarease.app.presentation.auth.sign_up.SignUpViewModel
 import org.librarease.app.presentation.auth.verify_email.VerifyEmailScreen
 import org.librarease.app.presentation.auth.verify_email.VerifyEmailViewModel
+import org.librarease.app.presentation.main.MainScreen
+import org.librarease.app.presentation.main.MainViewModel
 import org.librarease.app.presentation.profile.ProfileScreen
 import org.librarease.app.presentation.profile.ProfileViewmodel
 
@@ -29,9 +31,9 @@ fun AppNavGraph(
         startDestination = startDestination.route
     ) {
         composable(Route.Main.route) {
-            val viewModel: ProfileViewmodel = hiltViewModel()
-            ProfileScreen(
-                viewmodel = viewModel,
+            val viewModel: MainViewModel = hiltViewModel()
+            MainScreen (
+                viewModel = viewModel,
                 navigateAndClear = navController::navigateAndClear
             )
         }
@@ -65,22 +67,26 @@ fun AppNavGraph(
                 navigateAndClear = navController::navigateAndClear
             )
         }
-
+        
+        composable(Route.Profile.route) {
+            val viewModel: ProfileViewmodel = hiltViewModel()
+            ProfileScreen(
+                viewmodel = viewModel,
+                navigateAndClear = navController::navigateAndClear
+            )
+        }
     }
 }
 
 fun NavHostController.navigateAndClear(route: Route) {
     val startRoute = graph.findStartDestination().route
-    if (startRoute != null) {
-        navigate(route.route) {
-            popUpTo(startRoute) { inclusive = false }
-            launchSingleTop = true
-        }
-    } else {
-        navigate(route.route) {
-            popUpTo(0) { inclusive = false }
-            launchSingleTop = true
-        }
+    navigate(route.route) {
+        // Pop up to the start destination to avoid building up a large stack of destinations
+        startRoute?.let { popUpTo(it) { inclusive = false } } ?: popUpTo(0) { inclusive = false }
+        // Single top ensures we don't create multiple copies of the same destination
+        launchSingleTop = true
+        // Restore state ensures the state of the destination is restored when navigating back to it
+        restoreState = true
     }
 }
 

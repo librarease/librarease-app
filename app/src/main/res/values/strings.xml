@@ -36,4 +36,6 @@
     <string name="reset_password_message">We\'ve sent you an email with a link to reset the password.</string>"
     <string name="reauthentication_required_message">You need to reauthenticate before deleting the user.</string>
     <string name="user_deleted_message">User successfully deleted.</string>
+
+    <string name="continue_as_guest">"Continue as Guest"</string>
 </resources>

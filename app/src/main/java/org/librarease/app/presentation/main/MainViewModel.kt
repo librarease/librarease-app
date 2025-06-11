@@ -21,7 +21,6 @@ class MainViewModel @Inject constructor(
     val authState: StateFlow<Boolean> = _authState.asStateFlow()
 
     private val _deleteUserState = MutableStateFlow<DeleteUserResponse>(Resource.Idle)
-    val deleteUserState: StateFlow<DeleteUserResponse> = _deleteUserState.asStateFlow()
 
     init {
         getAuthState()

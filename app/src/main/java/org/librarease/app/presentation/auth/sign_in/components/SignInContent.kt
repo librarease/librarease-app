@@ -18,12 +18,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.librarease.app.R
@@ -31,8 +29,6 @@ import org.librarease.app.common.ActionButton
 import org.librarease.app.common.ActionText
 import org.librarease.app.common.EmailField
 import org.librarease.app.common.PasswordField
-
-private const val VERTICAL_DIVIDER = "|"
 
 @Composable
 fun SignInContent(
@@ -45,6 +41,7 @@ fun SignInContent(
     onSignInClick: (String, String) -> Unit,
     isLoading: Boolean,
     onForgotPasswordClick: () -> Unit,
+    continueAsGuestClick: () -> Unit,
     onSignUpTextClick: () -> Unit
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
@@ -105,7 +102,6 @@ fun SignInContent(
         
         Spacer(modifier = Modifier.height(8.dp))
         
-        // Forgot Password link aligned to the right
         ActionText(
             onActionTextClick = onForgotPasswordClick,
             resourceId = R.string.forgot_password,
@@ -133,8 +129,7 @@ fun SignInContent(
         )
         
         Spacer(modifier = Modifier.height(24.dp))
-        
-        // OR divider
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -157,20 +152,15 @@ fun SignInContent(
         }
         
         Spacer(modifier = Modifier.height(24.dp))
-        
-        // Social sign-in options would go here
-        // For now, just showing a placeholder text
-        Text(
-            text = "Continue as Guest",
-            color = MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.Medium,
+
+        ActionText(
+            onActionTextClick = continueAsGuestClick,
+            resourceId = R.string.continue_as_guest,
             modifier = Modifier
                 .padding(bottom = 24.dp)
-                .fillMaxWidth(),
-            textAlign = TextAlign.Center
+                .align(Alignment.CenterHorizontally),
         )
         
-        // Sign up text
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center

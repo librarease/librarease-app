@@ -33,7 +33,7 @@ fun SplashScreen(
         delay(1500)
         when {
             viewModel.isUserSignOut -> navigateAndClear(Route.SignIn)
-            viewModel.isEmailVerified -> navigateAndClear(Route.Profile)
+            viewModel.isEmailVerified -> navigateAndClear(Route.Main)
             else -> navigateAndClear(Route.VerifyEmail)
         }
     }

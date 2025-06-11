@@ -28,13 +28,7 @@ fun MainScreen(
 ) {
     val context = LocalContext.current
     val activity = context as Activity
-    val snackbarHostState = remember { SnackbarHostState() }
     val isUserSignIn by viewModel.authState.collectAsState()
-    val deleteUserResponse by viewModel.deleteUserState.collectAsState()
-    val userDeletedMessage = stringResource(id = R.string.user_deleted_message)
-    val sensitiveKeyword = stringResource(id = R.string.sensitive_keyword)
-    val reauthenticationRequiredMessage = stringResource(id = R.string.reauthentication_required_message)
-    val signOutActionLabel = stringResource(R.string.sign_out_action_label)
 
     BackHandler {
         activity.finish()
@@ -44,7 +38,6 @@ fun MainScreen(
         topBar = {
             MainAppBar(
                 signOut = viewModel::signOut,
-                deleteUser = viewModel::deleteUser,
                 isUserSignIn = isUserSignIn,
                 onLoginClick = {
                     navigateAndClear(Route.SignIn)
@@ -65,30 +58,5 @@ fun MainScreen(
                 navigateAndClear(Route.SignUp)
             }
         )
-    }
-
-    when (val deleteUserResponse = deleteUserResponse) {
-        is Resource.Idle -> {}
-        is Resource.Loading -> LoadingIndicator()
-        is Resource.Success -> LaunchedEffect(Unit) {
-            showToastMessage(context, userDeletedMessage)
-        }
-        is Resource.Failure -> {
-            deleteUserResponse.e?.message?.let { errorMessage ->
-                LaunchedEffect(errorMessage) {
-                    if (errorMessage.contains(sensitiveKeyword)) {
-                        val result = snackbarHostState.showSnackbar(
-                            message = reauthenticationRequiredMessage,
-                            actionLabel = signOutActionLabel
-                        )
-                        if (result == SnackbarResult.ActionPerformed) {
-                            viewModel.signOut()
-                        }
-                    } else {
-                        showToastMessage(context, errorMessage)
-                    }
-                }
-            }
-        }
     }
 }
