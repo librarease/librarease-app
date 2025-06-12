@@ -1,5 +1,6 @@
 package org.librarease.app.presentation.main.components
 
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -35,12 +36,15 @@ fun LazyLibraryRow(
         flingBehavior = rememberSnapFlingBehavior(lazyListState = lazyRowState)
     ) {
         items(itemList) { libraryItem ->
-            LibraryCard(
-                libraryItem.name,
-                modifier = modifier
-                    .padding(6.dp)
-                    .wrapContentWidth(Alignment.CenterHorizontally)
-            )
+            Log.d("library list", "Library name: ${libraryItem.name}")
+            libraryItem.name?.let {
+                LibraryCard(
+                    it,
+                    modifier = modifier
+                        .padding(6.dp)
+                        .wrapContentWidth(Alignment.CenterHorizontally)
+                )
+            }
         }
     }
 }

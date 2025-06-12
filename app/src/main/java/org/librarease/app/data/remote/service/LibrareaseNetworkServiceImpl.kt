@@ -10,7 +10,7 @@ class LibrareaseNetworkServiceImpl(
 ): LibrareaseNetworkService {
     override suspend fun getBooks(limit: Int): BookListResponse {
         return try {
-            api.getBooks()
+            api.getBooks(limit = limit)
         } catch (e: Exception) {
             e.printStackTrace()
             BookListResponse(emptyList())

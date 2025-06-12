@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.librarease.app.R
 import org.librarease.app.common.LoadingIndicator
 import org.librarease.app.core.Resource
@@ -29,6 +30,9 @@ fun MainScreen(
     val context = LocalContext.current
     val activity = context as Activity
     val isUserSignIn by viewModel.authState.collectAsState()
+
+    val books = viewModel.bookList.collectAsStateWithLifecycle().value
+    val libraries = viewModel.libraryList.collectAsStateWithLifecycle().value
 
     BackHandler {
         activity.finish()
@@ -56,7 +60,9 @@ fun MainScreen(
             },
             onSignUpClick = {
                 navigateAndClear(Route.SignUp)
-            }
+            },
+            bookList = books,
+            libraryList = libraries
         )
     }
 }

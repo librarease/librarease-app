@@ -46,16 +46,12 @@ fun MainContent(
     innerPadding: PaddingValues,
     isUserSignIn: Boolean,
     onLoginClick: () -> Unit,
-    onSignUpClick: () -> Unit
+    onSignUpClick: () -> Unit,
+    bookList: List<BookItem>,
+    libraryList: List<Library>
 ) {
     var searchQuery by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
-    val bookItems = List(10) { index ->
-        BookItem("Book ${index + 1}", "Author ${index + 1}")
-    }
-    val libraryItems = List(6) { index ->
-        Library("A Lin Yaung ${index + 1}")
-    }
     val bookRowState = rememberLazyListState()
     val libraryRowState = rememberLazyListState()
 
@@ -127,7 +123,7 @@ fun MainContent(
             LazyBookRow(
                 lazyRowState = bookRowState,
                 modifier = Modifier,
-                itemList = bookItems
+                itemList = bookList
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
@@ -139,19 +135,7 @@ fun MainContent(
             LazyLibraryRow(
                 lazyRowState = libraryRowState,
                 modifier = Modifier,
-                itemList = libraryItems
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Libraries",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 16.dp, top = 8.dp)
-            )
-            LazyLibraryRow(
-                lazyRowState = libraryRowState,
-                modifier = Modifier,
-                itemList = libraryItems
+                itemList = libraryList
             )
         }
 

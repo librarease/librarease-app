@@ -67,14 +67,7 @@ fun AppNavGraph(
                 navigateAndClear = navController::navigateAndClear
             )
         }
-        
-        composable(Route.Profile.route) {
-            val viewModel: ProfileViewmodel = hiltViewModel()
-            ProfileScreen(
-                viewmodel = viewModel,
-                navigateAndClear = navController::navigateAndClear
-            )
-        }
+
     }
 }
 

@@ -1,18 +1,23 @@
 package org.librarease.app.data.repository
 
+import org.librarease.app.data.mapper.ResponseMapper
+import org.librarease.app.data.remote.service.LibrareaseNetworkService
 import org.librarease.app.domain.model.BookItem
 import org.librarease.app.domain.model.Library
 import org.librarease.app.domain.repository.LibrareaseRepository
+import javax.inject.Inject
 
-class LibrareaseRepoImpl(
-
+class LibrareaseRepoImpl @Inject constructor(
+    private val networkService: LibrareaseNetworkService
 ): LibrareaseRepository {
+    
     override suspend fun getBooks(limit: Int): List<BookItem> {
-        TODO("Not yet implemented")
+        val response = networkService.getBooks(limit)
+        return ResponseMapper.bookListMapper(response)
     }
 
     override suspend fun getLibraries(limit: Int): List<Library> {
-        TODO("Not yet implemented")
+        val response = networkService.getLibraries(limit)
+        return ResponseMapper.libraryListMapper(response)
     }
-
 }

@@ -9,21 +9,30 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.librarease.app.domain.model.BookItem
+import org.librarease.app.domain.model.Library
+import org.librarease.app.domain.repository.LibrareaseRepository
 import javax.inject.Inject
 
-typealias DeleteUserResponse = Resource<Unit>
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val repo: AuthRepository
+    private val repo: AuthRepository,
+    private val librareaseRepo: LibrareaseRepository
 ): ViewModel() {
     private val _authState = MutableStateFlow(repo.currentUser != null)
     val authState: StateFlow<Boolean> = _authState.asStateFlow()
 
-    private val _deleteUserState = MutableStateFlow<DeleteUserResponse>(Resource.Idle)
+    private val _booksList = MutableStateFlow<List<BookItem>>(emptyList())
+    val bookList: StateFlow<List<BookItem>> = _booksList.asStateFlow()
+
+    private val _libraryList = MutableStateFlow<List<Library>>(emptyList())
+    val libraryList: StateFlow<List<Library>> = _libraryList.asStateFlow()
 
     init {
         getAuthState()
+        getBookList(20)
+        getLibraryList(5 )
     }
 
     private fun getAuthState() = viewModelScope.launch {
@@ -32,14 +41,25 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun signOut() = repo.signOut()
-
-    fun deleteUser() = viewModelScope.launch {
+    fun getBookList(limit: Int) {
         try {
-            _deleteUserState.value = Resource.Loading
-            _deleteUserState.value = Resource.Success(repo.deleteUser())
+           viewModelScope.launch {
+               _booksList.value = librareaseRepo.getBooks(limit)
+           }
         } catch (e: Exception) {
-            _deleteUserState.value = Resource.Failure(e)
+            e.printStackTrace()
         }
     }
+     fun getLibraryList(limit: Int) {
+        try {
+            viewModelScope.launch {
+                _libraryList.value = librareaseRepo.getLibraries(limit)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun signOut() = repo.signOut()
+
 }
