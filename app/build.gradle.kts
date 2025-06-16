@@ -97,4 +97,11 @@ dependencies {
     //firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
+    
+    //Coil for image loading
+    implementation(libs.coil.compose)
+    implementation(libs.coil.compose.base)
+    
+    //DataStore for preferences
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 }

@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -36,6 +38,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.librarease.app.R
+import org.librarease.app.ui.theme.ThemeController
+import org.librarease.app.ui.theme.ThemeMode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,6 +65,16 @@ fun MainAppBar(
         ),
         modifier = Modifier.shadow(elevation = 4.dp),
         actions = {
+            // Theme toggle button
+            IconButton(onClick = { ThemeController.toggleTheme() }) {
+                Icon(
+                    imageVector = if (ThemeController.themeMode == ThemeMode.DARK) 
+                        Icons.Filled.LightMode else Icons.Filled.DarkMode,
+                    contentDescription = "Toggle theme",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+            
             if (isUserSignIn) {
                 IconButton(onClick = { openMenu = !openMenu }) {
                     Icon(

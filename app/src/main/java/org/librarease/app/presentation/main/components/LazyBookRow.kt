@@ -46,7 +46,7 @@ fun LazyBookRow(
                         )
                     ),
                 title = bookItem.title,
-                author = bookItem.author
+                cover = bookItem.cover
             )
         }
     }

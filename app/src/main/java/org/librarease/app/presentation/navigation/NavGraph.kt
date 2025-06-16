@@ -74,11 +74,8 @@ fun AppNavGraph(
 fun NavHostController.navigateAndClear(route: Route) {
     val startRoute = graph.findStartDestination().route
     navigate(route.route) {
-        // Pop up to the start destination to avoid building up a large stack of destinations
         startRoute?.let { popUpTo(it) { inclusive = false } } ?: popUpTo(0) { inclusive = false }
-        // Single top ensures we don't create multiple copies of the same destination
         launchSingleTop = true
-        // Restore state ensures the state of the destination is restored when navigating back to it
         restoreState = true
     }
 }
