@@ -15,8 +15,13 @@ class LibrareaseRepoImpl @Inject constructor(
         val response = networkService.getBooks(limit)
         return ResponseMapper.bookListMapper(response)
     }
+    
+    override suspend fun getBooksPaginated(limit: Int, page: Int): List<BookItem> {
+        val response = networkService.getBooksPaginated(limit, page)
+        return ResponseMapper.bookListMapper(response)
+    }
 
-    override suspend        fun getLibraries(limit: Int): List<Library> {
+    override suspend fun getLibraries(limit: Int): List<Library> {
         val response = networkService.getLibraries(limit)
         return ResponseMapper.libraryListMapper(response)
     }

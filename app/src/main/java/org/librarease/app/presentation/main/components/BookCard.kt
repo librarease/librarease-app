@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerEventType
@@ -40,6 +41,7 @@ import coil.compose.AsyncImage
 @Composable
 fun BookCard(
     modifier: Modifier = Modifier,
+    author: String,
     title: String,
     cover: String
 ) {
@@ -71,9 +73,8 @@ fun BookCard(
         ),
         shape = RoundedCornerShape(8.dp)
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            modifier = Modifier.fillMaxWidth()
         ) {
             AsyncImage(
                 model = cover,
@@ -82,9 +83,46 @@ fun BookCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(0.7f)
-                    .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
+                    .clip(RoundedCornerShape(8.dp))
                     .graphicsLayer {}
             )
+            
+            // Gradient overlay at the bottom
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color.Black.copy(alpha = 0.7f)
+                            ),
+                            startY = 0f,
+                            endY = 150f
+                        )
+                    )
+                    .padding(8.dp)
+            ) {
+                Column {
+                    Text(
+                        text = title,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp,
+                        maxLines = 1,
+                        color = Color.White,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = author,
+                        fontSize = 10.sp,
+                        color = Color.White.copy(alpha = 0.7f),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
         }
     }
 }

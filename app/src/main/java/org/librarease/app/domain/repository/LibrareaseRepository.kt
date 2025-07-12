@@ -6,6 +6,8 @@ import org.librarease.app.domain.model.Library
 interface LibrareaseRepository {
 
     suspend fun getBooks(limit: Int): List<BookItem>
+    
+    suspend fun getBooksPaginated(limit: Int, page: Int): List<BookItem>
 
     suspend fun getLibraries(limit: Int): List<Library>
 }

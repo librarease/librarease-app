@@ -25,14 +25,16 @@ import org.librarease.app.presentation.navigation.Route
 @Composable
 fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),
-    navigateAndClear: (Route) -> Unit
+    navigateAndClear: (Route) -> Unit,
+    navigate: (Route) -> Unit = {}
 ) {
     val context = LocalContext.current
     val activity = context as Activity
     val isUserSignIn by viewModel.authState.collectAsState()
 
-    val books = viewModel.bookList.collectAsStateWithLifecycle().value
+    val books = viewModel.filteredBooksList.collectAsStateWithLifecycle().value
     val libraries = viewModel.libraryList.collectAsStateWithLifecycle().value
+    val searchQuery by viewModel.searchQuery.collectAsState()
 
     BackHandler {
         activity.finish()
@@ -62,7 +64,13 @@ fun MainScreen(
                 navigateAndClear(Route.SignUp)
             },
             bookList = books,
-            libraryList = libraries
+            libraryList = libraries,
+            searchQuery = searchQuery,
+            onSearchQueryChange = viewModel::updateSearchQuery,
+            onSeeAllBooksClick = {
+                viewModel.resetPagination() // Reset pagination state before navigating
+                navigate(Route.AllBooks)
+            }
         )
     }
 }

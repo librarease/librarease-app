@@ -7,6 +7,7 @@ sealed class Route(val route: String) {
     data object VerifyEmail : Route("verify_email")
     data object Profile : Route("profile")
     data object Main : Route("main")
+    data object AllBooks : Route("all_books")
 
     override fun toString(): String = route
 }

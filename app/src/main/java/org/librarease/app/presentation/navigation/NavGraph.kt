@@ -15,6 +15,7 @@ import org.librarease.app.presentation.auth.sign_up.SignUpScreen
 import org.librarease.app.presentation.auth.sign_up.SignUpViewModel
 import org.librarease.app.presentation.auth.verify_email.VerifyEmailScreen
 import org.librarease.app.presentation.auth.verify_email.VerifyEmailViewModel
+import org.librarease.app.presentation.books.AllBooksScreen
 import org.librarease.app.presentation.main.MainScreen
 import org.librarease.app.presentation.main.MainViewModel
 import org.librarease.app.presentation.profile.ProfileScreen
@@ -34,7 +35,8 @@ fun AppNavGraph(
             val viewModel: MainViewModel = hiltViewModel()
             MainScreen (
                 viewModel = viewModel,
-                navigateAndClear = navController::navigateAndClear
+                navigateAndClear = navController::navigateAndClear,
+                navigate = { route -> navController.navigate(route.route) }
             )
         }
         composable(Route.SignIn.route) {
@@ -65,6 +67,14 @@ fun AppNavGraph(
             VerifyEmailScreen(
                 viewModel = viewModel,
                 navigateAndClear = navController::navigateAndClear
+            )
+        }
+        
+        composable(Route.AllBooks.route) {
+            val viewModel: MainViewModel = hiltViewModel()
+            AllBooksScreen(
+                viewModel = viewModel,
+                navigateBack = navController::navigateUp
             )
         }
 

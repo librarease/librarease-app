@@ -16,6 +16,15 @@ class LibrareaseNetworkServiceImpl(
             BookListResponse(emptyList())
         }
     }
+    
+    override suspend fun getBooksPaginated(limit: Int, page: Int): BookListResponse {
+        return try {
+            api.getBooks(limit = limit, page = page)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            BookListResponse(emptyList())
+        }
+    }
 
     override suspend fun getLibraries(limit: Int): LibraryListResponse {
         return try {
