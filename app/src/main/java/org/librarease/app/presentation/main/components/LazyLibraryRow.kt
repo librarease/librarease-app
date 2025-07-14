@@ -25,7 +25,8 @@ import org.librarease.app.domain.model.Library
 fun LazyLibraryRow(
     lazyRowState: LazyListState,
     modifier: Modifier = Modifier,
-    itemList: List<Library>
+    itemList: List<Library>,
+    onLibraryClick: (Library) -> Unit = {}
 ) {
     LazyRow(
         state = lazyRowState,
@@ -39,13 +40,15 @@ fun LazyLibraryRow(
     ) {
         items(itemList) { libraryItem ->
             Log.d("library list", "Library name: ${libraryItem.name}")
-            libraryItem.name?.let {
+            if (libraryItem.id.isNotEmpty() && libraryItem.name != null) {
                 LibraryCard(
-                    it,
+                    name = libraryItem.name,
+                    logo = libraryItem.logo,
                     modifier = modifier
                         .padding(6.dp)
                         .wrapContentWidth(Alignment.CenterHorizontally)
-                        .background(MaterialTheme.colorScheme.background)
+                        .background(MaterialTheme.colorScheme.background),
+                    onClick = { onLibraryClick(libraryItem) }
                 )
             }
         }

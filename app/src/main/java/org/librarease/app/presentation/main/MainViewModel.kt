@@ -126,9 +126,16 @@ class MainViewModel @Inject constructor(
      fun getLibraryList(limit: Int) {
         try {
             viewModelScope.launch {
-                _libraryList.value = librareaseRepo.getLibraries(limit)
+                println("Loading libraries with limit: $limit")
+                val libraries = librareaseRepo.getLibraries(limit)
+                println("Loaded ${libraries.size} libraries")
+                libraries.forEach { library ->
+                    println("Library: ${library.name} (ID: ${library.id})")
+                }
+                _libraryList.value = libraries
             }
         } catch (e: Exception) {
+            println("Error loading libraries: ${e.message}")
             e.printStackTrace()
         }
     }

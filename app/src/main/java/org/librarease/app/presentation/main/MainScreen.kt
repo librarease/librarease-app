@@ -21,6 +21,7 @@ import org.librarease.app.core.showToastMessage
 import org.librarease.app.presentation.main.components.MainAppBar
 import org.librarease.app.presentation.main.components.MainContent
 import org.librarease.app.presentation.navigation.Route
+import org.librarease.app.domain.model.Library
 
 @Composable
 fun MainScreen(
@@ -70,6 +71,16 @@ fun MainScreen(
             onSeeAllBooksClick = {
                 viewModel.resetPagination() // Reset pagination state before navigating
                 navigate(Route.AllBooks)
+            },
+            onLibraryClick = { library ->
+                try {
+                    println("Library clicked: ${library.name} with ID: ${library.id}")
+                    val route = Route.LibraryDetailWithId(library.id)
+                    navigate(route)
+                } catch (e: Exception) {
+                    println("Error navigating to library detail: ${e.message}")
+                    e.printStackTrace()
+                }
             }
         )
     }

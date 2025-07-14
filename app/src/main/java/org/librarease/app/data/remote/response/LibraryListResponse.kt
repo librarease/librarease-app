@@ -7,6 +7,9 @@ data class LibraryListResponse(
     val libraryList: List<Library?>?
 ) {
     data class Library(
+        @SerializedName("id")
+        val id: String?,
+
         @SerializedName("name")
         val name: String?,
 
@@ -14,6 +17,9 @@ data class LibraryListResponse(
         val phoneNo: String?,
 
         @SerializedName("email")
-        val email: String?
+        val email: String?,
+
+        @SerializedName("logo")
+        val logo: String?
     )
 }

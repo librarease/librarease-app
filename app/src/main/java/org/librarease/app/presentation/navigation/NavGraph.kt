@@ -4,9 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import org.librarease.app.domain.model.Library
 import org.librarease.app.presentation.auth.forgot_psw.ForgotPasswordScreen
 import org.librarease.app.presentation.auth.forgot_psw.ForgotPasswordViewModel
 import org.librarease.app.presentation.auth.sign_in.SignInScreen
@@ -16,11 +19,11 @@ import org.librarease.app.presentation.auth.sign_up.SignUpViewModel
 import org.librarease.app.presentation.auth.verify_email.VerifyEmailScreen
 import org.librarease.app.presentation.auth.verify_email.VerifyEmailViewModel
 import org.librarease.app.presentation.books.AllBooksScreen
+import org.librarease.app.presentation.library_detail.LibraryDetailScreen
 import org.librarease.app.presentation.main.MainScreen
 import org.librarease.app.presentation.main.MainViewModel
 import org.librarease.app.presentation.profile.ProfileScreen
 import org.librarease.app.presentation.profile.ProfileViewmodel
-
 
 @Composable
 fun AppNavGraph(
@@ -74,6 +77,20 @@ fun AppNavGraph(
             val viewModel: MainViewModel = hiltViewModel()
             AllBooksScreen(
                 viewModel = viewModel,
+                navigateBack = navController::navigateUp
+            )
+        }
+        
+        composable(
+            route = "${Route.LibraryDetail.route}/{libraryId}",
+            arguments = listOf(
+                navArgument("libraryId") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val libraryId = backStackEntry.arguments?.getString("libraryId") ?: ""
+            
+            LibraryDetailScreen(
+                libraryId = libraryId,
                 navigateBack = navController::navigateUp
             )
         }

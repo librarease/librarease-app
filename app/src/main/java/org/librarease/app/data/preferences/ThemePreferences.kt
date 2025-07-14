@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.librarease.app.ui.theme.ThemeMode
 
-// Create a DataStore instance at the app level
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 class ThemePreferences(private val context: Context) {

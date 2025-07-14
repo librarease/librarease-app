@@ -2,8 +2,10 @@ package org.librarease.app.data.mapper
 
 import org.librarease.app.data.remote.response.BookListResponse
 import org.librarease.app.data.remote.response.LibraryListResponse
+import org.librarease.app.data.remote.response.MembershipListResponse
 import org.librarease.app.domain.model.BookItem
 import org.librarease.app.domain.model.Library
+import org.librarease.app.domain.model.Membership
 
 object ResponseMapper {
 
@@ -33,12 +35,14 @@ object ResponseMapper {
         
         responseData?.forEach { library ->
             library?.let {
-                if (it.name != null) {
+                if (it.id != null && it.name != null) {
                     libraryList.add(
                         Library(
+                            id = it.id,
                             name = it.name,
                             phoneNo = it.phoneNo,
-                            email = it.email
+                            email = it.email,
+                            logo = it.logo
                         )
                     )
                 }
@@ -46,5 +50,41 @@ object ResponseMapper {
         }
         
         libraryList
+    }
+    
+    val libraryMapper: (LibraryListResponse.Library) -> Library = { library ->
+        Library(
+            id = library.id ?: "",
+            name = library.name,
+            phoneNo = library.phoneNo,
+            email = library.email,
+            logo = library.logo
+        )
+    }
+    
+    val membershipListMapper: (MembershipListResponse) -> List<Membership> = { response ->
+        val responseData = response.membershipList
+        val membershipList = ArrayList<Membership>()
+        
+        responseData?.forEach { membership ->
+            membership?.let {
+                if (it.id != null && it.name != null && it.libraryId != null) {
+                    membershipList.add(
+                        Membership(
+                            id = it.id,
+                            name = it.name,
+                            description = it.description ?: "",
+                            price = it.price ?: 0.0,
+                            durationDays = it.durationDays ?: 30,
+                            loanPeriod = it.loadPeriod ?: 7,
+                            libraryId = it.libraryId,
+                            maxBooks = it.maxBooks ?: 5,
+                        )
+                    )
+                }
+            }
+        }
+        
+        membershipList
     }
 }

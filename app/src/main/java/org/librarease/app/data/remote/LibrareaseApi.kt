@@ -2,7 +2,9 @@ package org.librarease.app.data.remote
 
 import org.librarease.app.data.remote.response.BookListResponse
 import org.librarease.app.data.remote.response.LibraryListResponse
+import org.librarease.app.data.remote.response.MembershipListResponse
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface LibrareaseApi {
@@ -12,6 +14,11 @@ interface LibrareaseApi {
         @Query("page") page: Int? = null
     ): LibraryListResponse
 
+    @GET("libraries/{id}")
+    suspend fun getLibraryById(
+        @Path("id") id: String
+    ): LibraryListResponse.Library
+
     @GET("books")
     suspend fun getBooks(
         @Query("limit") limit: Int? = null,
@@ -20,9 +27,10 @@ interface LibrareaseApi {
 
     @GET("memberships")
     suspend fun getMemberships(
+        @Query("library_id") libraryId: String,
         @Query("limit") limit: Int? = null,
         @Query("page") page: Int? = null
-    )
+    ): MembershipListResponse
 
     companion object {
         const val BASE_URL = "https://librarease.org/api/v1/"

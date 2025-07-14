@@ -1,8 +1,10 @@
 package org.librarease.app.data.remote.service
 
+import android.util.Log
 import org.librarease.app.data.remote.LibrareaseApi
 import org.librarease.app.data.remote.response.BookListResponse
 import org.librarease.app.data.remote.response.LibraryListResponse
+import org.librarease.app.data.remote.response.MembershipListResponse
 import retrofit2.HttpException
 
 class LibrareaseNetworkServiceImpl(
@@ -32,6 +34,33 @@ class LibrareaseNetworkServiceImpl(
         } catch (e: Exception) {
             e.printStackTrace()
             LibraryListResponse(emptyList())
+        }
+    }
+    
+    override suspend fun getLibraryById(id: String): LibraryListResponse.Library {
+        return try {
+            Log.d("##getLibraryById", "success block entered")
+            api.getLibraryById(id)
+        } catch (e: Exception) {
+            Log.d("##getLibraryById", "error block entered")
+            e.printStackTrace()
+            // Return a placeholder library instead of throwing
+            LibraryListResponse.Library(
+                id = id,
+                name = "Library $id",
+                phoneNo = null,
+                email = null,
+                logo = null
+            )
+        }
+    }
+    
+    override suspend fun getMemberships(libraryId: String, limit: Int): MembershipListResponse {
+        return try {
+            api.getMemberships(libraryId = libraryId, limit = limit)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            MembershipListResponse(emptyList())
         }
     }
 }
