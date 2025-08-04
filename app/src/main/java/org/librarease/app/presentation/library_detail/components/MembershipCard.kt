@@ -115,25 +115,6 @@ fun MembershipCard(membership: Membership) {
                     )
                 }
             }
-            
-            Button(
-                onClick = { /* TODO: Implement purchase functionality */ },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                )
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Payment,
-                    contentDescription = "Purchase",
-                    modifier = Modifier.size(18.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Purchase Membership",
-                    fontWeight = FontWeight.Medium
-                )
-            }
         }
     }
 } 

@@ -105,4 +105,7 @@ dependencies {
     
     //DataStore for preferences
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    implementation(libs.zxing.core)
+    implementation(libs.zxing.android.embedded)
 }

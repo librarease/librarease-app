@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.firebase.auth.FirebaseAuth
 import org.librarease.app.R
 import org.librarease.app.common.LoadingIndicator
 import org.librarease.app.core.Resource
@@ -24,9 +25,9 @@ import org.librarease.app.presentation.profile.components.ProfileContent
 @Composable
 fun ProfileScreen(
     viewmodel: ProfileViewmodel = hiltViewModel(),
-    navigateAndClear: (Route) -> Unit
 ) {
     val context = LocalContext.current
+    val userId = FirebaseAuth.getInstance().currentUser?.uid
     val activity = context as Activity
     val snackbarHostState = remember { SnackbarHostState() }
     val isUserSignIn by viewmodel.authState.collectAsState()
@@ -41,21 +42,13 @@ fun ProfileScreen(
     }
     Scaffold(
         topBar = {
-            ProfileAppBar(
-                signOut = viewmodel::signOut,
-                deleteUser = viewmodel::deleteUser,
-                isUserSignIn = isUserSignIn,
-                onLoginClick = {
-                    navigateAndClear(Route.SignIn)
-                },
-                onSignUpClick = {
-                    navigateAndClear(Route.SignUp)
-                },
-            )
+
         }
     ) { innerPadding ->
-
-        ProfileContent(innerPadding = innerPadding)
+        ProfileContent(
+            innerPadding = innerPadding,
+            userId = userId ?: ""
+        )
     }
 
     when (val deleteUserResponse = deleteUserResponse) {

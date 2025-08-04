@@ -65,14 +65,14 @@ fun AppNavGraph(
                 navigateAndClear = navController::navigateAndClear
             )
         }
-        composable(Route.VerifyEmail.route) {
-            val viewModel: VerifyEmailViewModel = hiltViewModel()
-            VerifyEmailScreen(
-                viewModel = viewModel,
-                navigateAndClear = navController::navigateAndClear
-            )
-        }
-        
+//        composable(Route.VerifyEmail.route) {
+//            val viewModel: VerifyEmailViewModel = hiltViewModel()
+//            VerifyEmailScreen(
+//                viewModel = viewModel,
+//                navigateAndClear = navController::navigateAndClear
+//            )
+//        }
+//
         composable(Route.AllBooks.route) {
             val viewModel: MainViewModel = hiltViewModel()
             AllBooksScreen(
