@@ -19,16 +19,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,11 +33,54 @@ import androidx.compose.material3.MaterialTheme
 import org.librarease.app.domain.model.BookItem
 import org.librarease.app.domain.model.Library
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.ui.res.colorResource
 import org.librarease.app.R
-import org.librarease.app.presentation.navigation.Route
+import org.librarease.app.domain.model.CategoryItem
 
 
+@Composable
+fun NewMainContent(
+    innerPadding: PaddingValues,
+    isUserSignIn: Boolean,
+    onLoginClick: () -> Unit,
+    onSignUpClick: () -> Unit,
+    categoryList: List<CategoryItem>,
+    onCategoryClick: (CategoryItem) -> Unit
+) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            contentPadding = innerPadding,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            items(categoryList) { category ->
+                MainCategory(
+                    modifier = Modifier,
+                    categoryName = category.categoryName,
+                    icon = category.icon,
+                    onClick = { onCategoryClick(category) }
+                )
+            }
+        }
+        if (!isUserSignIn) {
+            SignInCardView(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                onSignUpClick = onSignUpClick,
+                onLoginClick = onLoginClick
+            )
+        }
+    }
+}
 @Composable
 fun MainContent(
     innerPadding: PaddingValues,
@@ -132,7 +170,7 @@ fun MainContent(
                         fontWeight = FontWeight.Medium
                     )
                     Icon(
-                        imageVector = Icons.Default.ArrowForward,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                         contentDescription = "See all books",
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(start = 4.dp)

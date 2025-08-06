@@ -47,7 +47,6 @@ fun MainAppBar(
     isUserSignIn: Boolean,
     signOut: () -> Unit,
     onLoginClick: () -> Unit,
-    onSignUpClick: () -> Unit
 ) {
     var openMenu by remember { mutableStateOf(false) }
 
@@ -65,7 +64,6 @@ fun MainAppBar(
         ),
         modifier = Modifier.shadow(elevation = 4.dp),
         actions = {
-            // Theme toggle button
             IconButton(onClick = { ThemeController.toggleTheme() }) {
                 Icon(
                     imageVector = if (ThemeController.themeMode == ThemeMode.DARK) 
@@ -99,46 +97,24 @@ fun MainAppBar(
                     )
                 }
             } else {
-                Row(
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically,
+                Button(
                     modifier = Modifier
-                        .padding(end = 8.dp)
-                        .fillMaxWidth(0.6f)
+                        .padding(horizontal = 4.dp)
+                        .height(36.dp),
+                    onClick = onLoginClick,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(id = R.color.primary),
+                        contentColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(18.dp)
                 ) {
-                    TextButton(
-                        onClick = onLoginClick,
-                        modifier = Modifier.padding(horizontal = 4.dp)
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.sign_in_button),
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = colorResource(id = R.color.primary),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                    
-                    Button(
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                            .height(36.dp),
-                        onClick = onSignUpClick,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(id = R.color.primary),
-                            contentColor = Color.White
-                        ),
-                        shape = RoundedCornerShape(18.dp)
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.sign_up_button),
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
+                    Text(
+                        text = stringResource(id = R.string.sign_in_button),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
             }
         }

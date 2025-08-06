@@ -80,20 +80,6 @@ fun AppNavGraph(
                 navigateBack = navController::navigateUp
             )
         }
-        
-        composable(
-            route = "${Route.LibraryDetail.route}/{libraryId}",
-            arguments = listOf(
-                navArgument("libraryId") { type = NavType.StringType }
-            )
-        ) { backStackEntry ->
-            val libraryId = backStackEntry.arguments?.getString("libraryId") ?: ""
-            
-            LibraryDetailScreen(
-                libraryId = libraryId,
-                navigateBack = navController::navigateUp
-            )
-        }
 
     }
 }

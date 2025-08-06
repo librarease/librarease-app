@@ -9,6 +9,14 @@ sealed class Route(val route: String) {
     data object Main : Route("main")
     data object AllBooks : Route("all_books")
     data object LibraryDetail : Route("library_detail")
+
+    data object Books: Route("books")
+
+    data object Libraries: Route("libraries")
+
+    data object Subscriptions: Route("subscriptions")
+
+    data object Borrowings: Route("borrowings")
     
     // Custom constructor for library detail with library ID only
     class LibraryDetailWithId(libraryId: String) : Route("library_detail/$libraryId")
