@@ -140,7 +140,7 @@ fun SignUpScreen(
         is Resource.Success -> {
             LaunchedEffect(Unit) {
                 showToastMessage(context, emailVerificationSentMessage)
-                navigateAndClear(Route.VerifyEmail)
+                navigateAndClear(Route.Main)
             }
         }
         is Resource.Failure -> {

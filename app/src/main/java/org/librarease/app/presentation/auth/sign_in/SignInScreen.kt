@@ -104,11 +104,7 @@ fun SignInScreen(
             }
             is Resource.Success -> {
                 LaunchedEffect(Unit) {
-                    if(viewModel.isEmailVerified) {
-                        navigateAndClear(Route.Main)
-                    } else {
-                        navigateAndClear(Route.VerifyEmail)
-                    }
+                    navigateAndClear(Route.Main)
                 }
             }
             is Resource.Failure -> {

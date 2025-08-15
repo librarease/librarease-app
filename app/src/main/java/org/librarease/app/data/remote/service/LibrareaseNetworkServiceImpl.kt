@@ -55,9 +55,9 @@ class LibrareaseNetworkServiceImpl(
         }
     }
     
-    override suspend fun getMemberships(libraryId: String, limit: Int): MembershipListResponse {
+    override suspend fun getMemberships(libraryId: String): MembershipListResponse {
         return try {
-            api.getMemberships(libraryId = libraryId, limit = limit)
+            api.getMemberships(libraryId = libraryId)
         } catch (e: Exception) {
             e.printStackTrace()
             MembershipListResponse(emptyList())

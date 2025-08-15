@@ -14,5 +14,5 @@ interface LibrareaseRepository {
     
     suspend fun getLibraryById(id: String): Library
     
-    suspend fun getMemberships(libraryId: String, limit: Int): List<Membership>
+    suspend fun getMemberships(libraryId: String): List<Membership>
 }

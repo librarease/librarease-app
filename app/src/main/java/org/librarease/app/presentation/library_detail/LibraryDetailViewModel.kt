@@ -51,7 +51,7 @@ class LibraryDetailViewModel @Inject constructor(
                 }
                 
                 // Load memberships
-                val membershipList = repository.getMemberships(libraryId, 50)
+                val membershipList = repository.getMemberships(libraryId)
                 _memberships.value = membershipList
                 println("Memberships loaded: ${membershipList.size} items")
                 

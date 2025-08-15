@@ -13,5 +13,5 @@ interface LibrareaseNetworkService {
     
     suspend fun getLibraryById(id: String): LibraryListResponse.Library
     
-    suspend fun getMemberships(libraryId: String, limit: Int): MembershipListResponse
+    suspend fun getMemberships(libraryId: String): MembershipListResponse
 }

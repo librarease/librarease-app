@@ -28,9 +28,12 @@ interface LibrareaseApi {
     @GET("memberships")
     suspend fun getMemberships(
         @Query("library_id") libraryId: String,
-        @Query("limit") limit: Int? = null,
-        @Query("page") page: Int? = null
     ): MembershipListResponse
+
+    @GET("subscriptions")
+    suspend fun getUserSubscriptions(
+        @Query("userId") userId: String
+    ):
 
     companion object {
         const val BASE_URL = "https://librarease.org/api/v1/"

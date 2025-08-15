@@ -25,22 +25,18 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-    
+
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
-        val logging = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-        
+    fun provideOkHttpClient(
+        authInterceptor: AuthInterceptor // <- Injected here
+    ): OkHttpClient {
         return OkHttpClient.Builder()
-            .addInterceptor(logging)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor(authInterceptor) // <- Attached to client
             .build()
     }
-    
+
+
     @Provides
     @Singleton
     fun provideLibrareaseApi(okHttpClient: OkHttpClient): LibrareaseApi {

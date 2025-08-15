@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.LocalLibrary
 import androidx.compose.material.icons.filled.Subscriptions
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.librarease.app.domain.model.CategoryItem
 import org.librarease.app.presentation.main.components.MainAppBar
+import org.librarease.app.presentation.main.components.MainBottomNavBar
 import org.librarease.app.presentation.main.components.MainContent
 import org.librarease.app.presentation.main.components.NewMainContent
 import org.librarease.app.presentation.navigation.Route
@@ -33,24 +35,24 @@ fun MainScreen(
     val activity = context as Activity
     val isUserSignIn by viewModel.authState.collectAsState()
 
-   val categoryList = listOf(
-       CategoryItem(
-           Icons.Default.Book,
-           "Books"
-       ),
-       CategoryItem(
-           Icons.Filled.LocalLibrary,
-           "Library"
-       ),
-       CategoryItem(
-           Icons.Default.Subscriptions,
-           "Subscriptions"
-       ),
-       CategoryItem(
-           Icons.Filled.LibraryBooks,
-           "Borrowings"
-       )
-   )
+    val categoryList = listOf(
+        CategoryItem(
+            Icons.Default.Book,
+            "Books"
+        ),
+        CategoryItem(
+            Icons.Filled.LocalLibrary,
+            "Libraries"
+        ),
+        CategoryItem(
+            Icons.Default.Subscriptions,
+            "Subscriptions"
+        ),
+        CategoryItem(
+            Icons.Filled.LibraryBooks,
+            "Borrowings"
+        )
+    )
 
     val (selectedRoute, setSelectedRoute) = rememberSaveable { mutableStateOf("home") }
 
@@ -81,32 +83,39 @@ fun MainScreen(
                 onLoginClick = { navigateAndClear(Route.SignIn) },
                 onSignUpClick = { navigateAndClear(Route.SignUp) },
                 categoryList = categoryList,
-                onCategoryClick = { navigateAndClear()},
+                onCategoryClick = { category ->
+                    when (category.title) {
+                        "Books" -> navigate(Route.Books)
+                        "Libraries" -> navigate(Route.Libraries)
+                        "Subscriptions" -> navigate(Route.Subscriptions)
+                        "Borrowings" -> navigate(Route.Borrowings)
+                    }
+                }
             )
-//            "home" -> MainContent(
-//                innerPadding = innerPadding,
-//                isUserSignIn = isUserSignIn,
-//                onLoginClick = { navigateAndClear(Route.SignIn) },
-//                onSignUpClick = { navigateAndClear(Route.SignUp) },
-//                bookList = books,
-//                libraryList = libraries,
-//                searchQuery = searchQuery,
-//                onSearchQueryChange = viewModel::updateSearchQuery,
-//                onSeeAllBooksClick = {
-//                    viewModel.resetPagination()
-//                    navigate(Route.AllBooks)
-//                },
-//                onLibraryClick = { library ->
-//                    try {
-//                        println("Library clicked: ${library.name} with ID: ${library.id}")
-//                        val route = Route.LibraryDetailWithId(library.id)
-//                        navigate(route)
-//                    } catch (e: Exception) {
-//                        println("Error navigating to library detail: ${e.message}")
-//                        e.printStackTrace()
-//                    }
-//                }
-//            )
+            "books" -> {
+                // Navigate to Books screen
+                LaunchedEffect(Unit) {
+                    navigate(Route.Books)
+                }
+            }
+            "libraries" -> {
+                // Navigate to Libraries screen
+                LaunchedEffect(Unit) {
+                    navigate(Route.Libraries)
+                }
+            }
+            "subscriptions" -> {
+                // Navigate to Subscriptions screen
+                LaunchedEffect(Unit) {
+                    navigate(Route.Subscriptions)
+                }
+            }
+            "borrowings" -> {
+                // Navigate to Borrowings screen
+                LaunchedEffect(Unit) {
+                    navigate(Route.Borrowings)
+                }
+            }
             "profile" -> {
                 ProfileScreen()
             }

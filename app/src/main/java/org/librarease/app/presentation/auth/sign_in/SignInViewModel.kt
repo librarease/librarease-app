@@ -44,6 +44,4 @@ class SignInViewModel @Inject constructor(
             _signInState.value = Resource.Failure(e)
         }
     }
-
-    val isEmailVerified get() = repo.currentUser?.isEmailVerified == true
 }

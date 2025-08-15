@@ -42,45 +42,7 @@ import org.librarease.app.R
 import org.librarease.app.domain.model.CategoryItem
 
 
-@Composable
-fun NewMainContent(
-    innerPadding: PaddingValues,
-    isUserSignIn: Boolean,
-    onLoginClick: () -> Unit,
-    onSignUpClick: () -> Unit,
-    categoryList: List<CategoryItem>,
-    onCategoryClick: (CategoryItem) -> Unit
-) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            contentPadding = innerPadding,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            items(categoryList) { category ->
-                MainCategory(
-                    modifier = Modifier,
-                    categoryName = category.categoryName,
-                    icon = category.icon,
-                    onClick = { onCategoryClick(category) }
-                )
-            }
-        }
-        if (!isUserSignIn) {
-            SignInCardView(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                onSignUpClick = onSignUpClick,
-                onLoginClick = onLoginClick
-            )
-        }
-    }
-}
+
 @Composable
 fun MainContent(
     innerPadding: PaddingValues,

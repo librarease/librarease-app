@@ -4,5 +4,5 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 data class CategoryItem(
     val icon: ImageVector,
-    val categoryName: String
+    val title: String
 )
