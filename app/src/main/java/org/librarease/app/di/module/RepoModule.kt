@@ -26,6 +26,21 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
+
+    @Provides
+    @Singleton
+    fun provideFirebaseTokenProvider(): FirebaseTokenProvider {
+        return FirebaseTokenProvider()
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthInterceptor(
+        tokenProvider: FirebaseTokenProvider
+    ): AuthInterceptor {
+        return AuthInterceptor(tokenProvider)
+    }
+
     @Provides
     @Singleton
     fun provideOkHttpClient(

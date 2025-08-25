@@ -19,6 +19,7 @@ import org.librarease.app.ui.theme.LibrareaseTheme
 import org.librarease.app.ui.theme.ThemeController
 import org.librarease.app.ui.theme.ThemeMode
 import dagger.hilt.android.AndroidEntryPoint
+import org.librarease.app.data.remote.LibrareaseApi
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -29,7 +30,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        
+
         // Initialize ThemePreferences
         themePreferences = ThemePreferences(applicationContext)
         

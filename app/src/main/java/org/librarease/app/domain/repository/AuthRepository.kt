@@ -2,6 +2,7 @@ package org.librarease.app.domain.repository
 
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.Flow
+import org.librarease.app.data.remote.response.SubscriptionResponse
 
 interface AuthRepository {
     val currentUser: FirebaseUser?
@@ -21,4 +22,6 @@ interface AuthRepository {
     fun signOut()
 
     fun getAuthState(): Flow<Boolean>
+
+    suspend fun getUserSubscriptions(userId: String): Result<List<SubscriptionResponse>>
 }
