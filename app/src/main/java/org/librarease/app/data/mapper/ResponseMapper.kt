@@ -3,9 +3,12 @@ package org.librarease.app.data.mapper
 import org.librarease.app.data.remote.response.BookListResponse
 import org.librarease.app.data.remote.response.LibraryListResponse
 import org.librarease.app.data.remote.response.MembershipListResponse
+import org.librarease.app.data.remote.response.SubscriptionResponse
 import org.librarease.app.domain.model.BookItem
 import org.librarease.app.domain.model.Library
 import org.librarease.app.domain.model.Membership
+import org.librarease.app.domain.model.Subscription
+import org.librarease.app.domain.model.SubscriptionStatus
 
 object ResponseMapper {
 
@@ -86,5 +89,32 @@ object ResponseMapper {
         }
         
         membershipList
+    }
+
+    val subscriptionListMapper: (List<SubscriptionResponse>) -> List<Subscription> = { responseList ->
+        val subscriptionList = ArrayList<Subscription>()
+        
+        responseList.forEach { subscriptionResponse ->
+            subscriptionList.add(
+                Subscription(
+                    id = subscriptionResponse.id,
+                    name = subscriptionResponse.name,
+                    libraryId = subscriptionResponse.libraryId,
+                    libraryName = subscriptionResponse.libraryName,
+                    status = when (subscriptionResponse.status.lowercase()) {
+                        "active" -> SubscriptionStatus.ACTIVE
+                        "expired" -> SubscriptionStatus.EXPIRED
+                        "suspended" -> SubscriptionStatus.SUSPENDED
+                        "pending" -> SubscriptionStatus.PENDING
+                        else -> SubscriptionStatus.ACTIVE
+                    },
+                    subscriptionDate = subscriptionResponse.subscriptionDate,
+                    expiryDate = subscriptionResponse.expiryDate,
+                    membershipType = subscriptionResponse.membershipType
+                )
+            )
+        }
+        
+        subscriptionList
     }
 }

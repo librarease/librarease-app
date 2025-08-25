@@ -3,6 +3,7 @@ package org.librarease.app.domain.repository
 import org.librarease.app.domain.model.BookItem
 import org.librarease.app.domain.model.Library
 import org.librarease.app.domain.model.Membership
+import org.librarease.app.domain.model.Subscription
 
 interface LibrareaseRepository {
 
@@ -15,4 +16,6 @@ interface LibrareaseRepository {
     suspend fun getLibraryById(id: String): Library
     
     suspend fun getMemberships(libraryId: String): List<Membership>
+    
+    suspend fun getUserSubscriptions(userId: String):List<Subscription>
 }

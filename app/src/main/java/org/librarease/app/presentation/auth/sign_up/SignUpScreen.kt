@@ -40,7 +40,6 @@ fun SignUpScreen(
     val password by viewModel.password.collectAsState()
     val fullName by viewModel.fullName.collectAsState()
     val signUpResponse by viewModel.signUpState.collectAsState()
-    val emailVerificationResponse by viewModel.emailVerificationState.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val invalidEmailMessage = stringResource(R.string.invalid_email_message)
     val invalidPasswordMessage = stringResource(R.string.invalid_password_message)
@@ -109,7 +108,7 @@ fun SignUpScreen(
         is Resource.Success -> {
             LaunchedEffect(Unit) {
                 showToastMessage(context, accountCreatedMessage)
-                viewModel.sendEmailVerification()
+                navigateAndClear(Route.Main)
             }
         }
         is Resource.Failure -> {
@@ -131,30 +130,4 @@ fun SignUpScreen(
         }
     }
 
-    when (val emailVerificationResponse = emailVerificationResponse) {
-        is Resource.Idle -> {
-        }
-        is Resource.Loading -> {
-
-        }
-        is Resource.Success -> {
-            LaunchedEffect(Unit) {
-                showToastMessage(context, emailVerificationSentMessage)
-                navigateAndClear(Route.Main)
-            }
-        }
-        is Resource.Failure -> {
-            emailVerificationResponse.e?.message?.let { errorMessage ->
-                LaunchedEffect(errorMessage) {
-                    logErrorMessage(errorMessage)
-                    val userFriendlyMessage = when {
-                        errorMessage.contains("network", ignoreCase = true) -> 
-                            "Network error. Please check your connection."
-                        else -> "Failed to send verification email. Please try again later."
-                    }
-                    showToastMessage(context, userFriendlyMessage)
-                }
-            }
-        }
-    }
 }

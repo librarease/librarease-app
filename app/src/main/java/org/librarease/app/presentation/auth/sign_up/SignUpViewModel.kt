@@ -14,7 +14,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 typealias SignUpResponse = Resource<Unit>
-typealias EmailVerificationResponse = Resource<Unit>
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
@@ -36,8 +35,6 @@ class SignUpViewModel @Inject constructor(
     private val _signUpState = MutableStateFlow<SignUpResponse>(Resource.Idle)
     val signUpState: StateFlow<SignUpResponse> = _signUpState.asStateFlow()
 
-    private val _emailVerificationState = MutableStateFlow<EmailVerificationResponse>(Resource.Idle)
-    val emailVerificationState: StateFlow<EmailVerificationResponse> = _emailVerificationState.asStateFlow()
 
     fun onEmailChange(newEmail: TextFieldValue) {
         _email.value = newEmail
@@ -66,14 +63,4 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    fun sendEmailVerification() = viewModelScope.launch {
-        try {
-            _emailVerificationState.value = Resource.Loading
-            _emailVerificationState.value = Resource.Success(repository.sendEmailVerification())
-        } catch (e: Exception) {
-            _emailVerificationState.value = Resource.Failure(e)
-        } finally {
-            _isLoading.value = false
-        }
-    }
 }

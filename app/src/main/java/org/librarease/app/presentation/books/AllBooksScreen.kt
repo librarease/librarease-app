@@ -152,7 +152,7 @@ fun AllBooksScreen(
                 if (isLoading) {
                     CircularProgressIndicator(
                         modifier = Modifier
-                            .align(Alignment.BottomCenter)
+                            .align(Alignment.Center)
                             .padding(16.dp)
                             .size(40.dp),
                         color = MaterialTheme.colorScheme.primary

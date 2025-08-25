@@ -1,6 +1,9 @@
 package org.librarease.app.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -19,11 +22,15 @@ import org.librarease.app.presentation.auth.sign_up.SignUpViewModel
 import org.librarease.app.presentation.auth.verify_email.VerifyEmailScreen
 import org.librarease.app.presentation.auth.verify_email.VerifyEmailViewModel
 import org.librarease.app.presentation.books.AllBooksScreen
+import org.librarease.app.presentation.borrowings.BorrowingsPlaceholderScreen
+import org.librarease.app.presentation.libraries.LibrariesPlaceholderScreen
 import org.librarease.app.presentation.library_detail.LibraryDetailScreen
+import org.librarease.app.presentation.library_detail.components.LibraryListScreen
 import org.librarease.app.presentation.main.MainScreen
 import org.librarease.app.presentation.main.MainViewModel
 import org.librarease.app.presentation.profile.ProfileScreen
 import org.librarease.app.presentation.profile.ProfileViewmodel
+import org.librarease.app.presentation.subscriptions.SubscriptionsScreen
 
 @Composable
 fun AppNavGraph(
@@ -81,6 +88,50 @@ fun AppNavGraph(
             )
         }
 
+        composable(Route.Books.route) {
+            val viewModel: MainViewModel = hiltViewModel()
+            AllBooksScreen(
+                viewModel = viewModel,
+                navigateBack = navController::navigateUp
+            )
+        }
+
+        composable(Route.Libraries.route) {
+            val viewModel: MainViewModel = hiltViewModel()
+            val libraryList by viewModel.libraryList.collectAsState()
+            LibraryListScreen(
+                libraryList = libraryList,
+                onLibraryClick = { library ->
+                    navController.navigate("library_detail/${library.id}")
+                },
+                navigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable(Route.Subscriptions.route) {
+            SubscriptionsScreen(
+                navigateBack = navController::navigateUp
+            )
+        }
+
+        composable(
+            route = "library_detail/{libraryId}",
+            arguments = listOf(navArgument("libraryId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val libraryId = backStackEntry.arguments?.getString("libraryId") ?: ""
+            LibraryDetailScreen(
+                libraryId = libraryId,
+                navigateBack = navController::navigateUp
+            )
+        }
+
+        composable(Route.Borrowings.route) {
+            BorrowingsPlaceholderScreen(
+                navigateBack = navController::navigateUp
+            )
+        }
     }
 }
 

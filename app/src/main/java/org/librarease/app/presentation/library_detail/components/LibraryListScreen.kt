@@ -1,33 +1,91 @@
 package org.librarease.app.presentation.library_detail.components
 
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.librarease.app.domain.model.Library
-import org.librarease.app.presentation.main.components.LazyLibraryRow
+import org.librarease.app.presentation.main.components.LibraryCard
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryListScreen(
     modifier: Modifier = Modifier,
     libraryList: List<Library>,
-    onLibraryClick: (Library)-> Unit
+    onLibraryClick: (Library) -> Unit,
+    navigateBack: () -> Unit
 ) {
-    val libraryRowState = rememberLazyListState()
-    Text(
-        text = "Libraries",
-        fontSize = 20.sp,
-        fontWeight = FontWeight.Bold,
-        modifier = modifier.padding(start = 16.dp, top = 8.dp)
-    )
-    LazyLibraryRow(
-        lazyRowState = libraryRowState,
-        modifier = modifier,
-        itemList = libraryList,
-        onLibraryClick = onLibraryClick
-    )
+    val lazyListState = rememberLazyListState()
+    
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("All Libraries") },
+                navigationIcon = {
+                    IconButton(onClick = navigateBack) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors()
+            )
+        }
+    ) { innerPadding ->
+        if (libraryList.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "No libraries available",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Check back later for new libraries",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        } else {
+            LazyColumn(
+                state = lazyListState,
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(
+                    items = libraryList,
+                    key = { library -> library.id }
+                ) { library ->
+                    LibraryCard(
+                        name = library.name ?: "Unknown Library",
+                        logo = library.logo,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(120.dp),
+                        onClick = { onLibraryClick(library) }
+                    )
+                }
+            }
+        }
+    }
 }

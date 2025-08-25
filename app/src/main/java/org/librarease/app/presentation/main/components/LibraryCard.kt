@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.LocalLibrary
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -36,118 +37,89 @@ fun LibraryCard(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
-    var elevated by remember { mutableStateOf(false) }
-
     Card(
         modifier = modifier
-            .width(160.dp)
-            .height(200.dp)
-            .padding(4.dp)
-            .clickable { onClick() }
-            .animateContentSize(),
+            .fillMaxWidth()
+            .clickable { onClick() },
         elevation = CardDefaults.cardElevation(
-            defaultElevation = if (elevated) 12.dp else 4.dp
+            defaultElevation = 4.dp
         ),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
-        Box(
-            modifier = Modifier.fillMaxSize()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // Library logo/icon
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .size(60.dp)
+                    .clip(RoundedCornerShape(8.dp))
                     .background(
-                        brush = Brush.verticalGradient(
+                        brush = Brush.radialGradient(
                             colors = listOf(
-                                colorResource(id = R.color.primary).copy(alpha = 0.1f),
-                                MaterialTheme.colorScheme.surface
+                                colorResource(id = R.color.primary).copy(alpha = 0.2f),
+                                colorResource(id = R.color.primary).copy(alpha = 0.1f)
                             )
                         )
-                    )
-            )
-            
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(
-                            brush = Brush.radialGradient(
-                                colors = listOf(
-                                    colorResource(id = R.color.primary).copy(alpha = 0.2f),
-                                    colorResource(id = R.color.primary).copy(alpha = 0.1f)
-                                )
-                            )
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (logo != null && logo.isNotEmpty()) {
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(logo)
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = "Library Logo",
-                            modifier = Modifier
-                                .size(60.dp)
-                                .clip(RoundedCornerShape(8.dp)),
-                            contentScale = ContentScale.Crop
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Default.LocalLibrary,
-                            contentDescription = "Library Icon",
-                            modifier = Modifier
-                                .size(40.dp)
-                                .graphicsLayer {
-                                    rotationZ = if (elevated) 5f else 0f
-                                },
-                            tint = colorResource(id = R.color.primary)
-                        )
-                    }
-                }
-                
-                Spacer(modifier = Modifier.height(8.dp))
-                
-                Text(
-                    text = name,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    maxLines = 2,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                
-                Spacer(modifier = Modifier.height(8.dp))
-                
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = colorResource(id = R.color.primary).copy(alpha = 0.1f)
                     ),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(
-                        text = "View Details",
+                contentAlignment = Alignment.Center
+            ) {
+                if (logo != null && logo.isNotEmpty()) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(logo)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = "Library Logo",
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = colorResource(id = R.color.primary)
+                            .size(50.dp)
+                            .clip(RoundedCornerShape(6.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.LocalLibrary,
+                        contentDescription = "Library Icon",
+                        modifier = Modifier.size(30.dp),
+                        tint = colorResource(id = R.color.primary)
                     )
                 }
             }
+            
+            // Library name and details
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = name,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    maxLines = 2,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                
+                Text(
+                    text = "Tap to view books and details",
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            
+            // Arrow icon
+            Icon(
+                imageVector = Icons.Default.ArrowForward,
+                contentDescription = "View Library",
+                modifier = Modifier.size(24.dp),
+                tint = colorResource(id = R.color.primary)
+            )
         }
     }
 }

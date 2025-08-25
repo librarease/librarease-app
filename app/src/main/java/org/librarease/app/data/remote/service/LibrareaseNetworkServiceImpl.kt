@@ -5,6 +5,7 @@ import org.librarease.app.data.remote.LibrareaseApi
 import org.librarease.app.data.remote.response.BookListResponse
 import org.librarease.app.data.remote.response.LibraryListResponse
 import org.librarease.app.data.remote.response.MembershipListResponse
+import org.librarease.app.data.remote.response.SubscriptionResponse
 import retrofit2.HttpException
 
 class LibrareaseNetworkServiceImpl(
@@ -61,6 +62,15 @@ class LibrareaseNetworkServiceImpl(
         } catch (e: Exception) {
             e.printStackTrace()
             MembershipListResponse(emptyList())
+        }
+    }
+
+    override suspend fun getUserSubscriptions(userID: String): List<SubscriptionResponse> {
+        return try {
+            api.getUserSubscriptions(userID)
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+            emptyList<SubscriptionResponse>()
         }
     }
 }

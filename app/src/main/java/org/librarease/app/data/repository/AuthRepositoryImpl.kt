@@ -5,24 +5,17 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
-import org.librarease.app.data.remote.LibrareaseApi
-import org.librarease.app.data.remote.response.SubscriptionResponse
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
-    private val auth: FirebaseAuth,
-    private val api: LibrareaseApi
+    private val auth: FirebaseAuth
 ) : AuthRepository {
     override val currentUser get() = auth.currentUser
 
     override suspend fun signUpWithEmailAndPassword(email: String, password: String) {
         auth.createUserWithEmailAndPassword(email, password).await()
-    }
-
-    override suspend fun sendEmailVerification() {
-        currentUser?.sendEmailVerification()?.await()
     }
 
     override suspend fun signInWithEmailAndPassword(email: String, password: String) {
@@ -53,12 +46,4 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getUserSubscriptions(userId: String): Result<List<SubscriptionResponse>> {
-        return try {
-            val response = api.getUserSubscriptions(userId)
-            Result.success(response)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
 }

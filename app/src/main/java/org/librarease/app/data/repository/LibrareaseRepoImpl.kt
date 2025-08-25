@@ -6,6 +6,7 @@ import org.librarease.app.data.remote.service.LibrareaseNetworkService
 import org.librarease.app.domain.model.BookItem
 import org.librarease.app.domain.model.Library
 import org.librarease.app.domain.model.Membership
+import org.librarease.app.domain.model.Subscription
 import org.librarease.app.domain.repository.LibrareaseRepository
 import javax.inject.Inject
 
@@ -37,5 +38,10 @@ class LibrareaseRepoImpl @Inject constructor(
     override suspend fun getMemberships(libraryId: String): List<Membership> {
         val response = networkService.getMemberships(libraryId)
         return ResponseMapper.membershipListMapper(response)
+    }
+    
+    override suspend fun getUserSubscriptions(userId: String): List<Subscription> {
+        val response = networkService.getUserSubscriptions(userId)
+        return ResponseMapper.subscriptionListMapper(response)
     }
 }

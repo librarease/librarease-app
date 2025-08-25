@@ -10,9 +10,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -37,13 +41,19 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import androidx.compose.material3.Icon
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.platform.LocalContext
+import org.librarease.app.R
 
 @Composable
 fun BookCard(
-    modifier: Modifier = Modifier,
-    author: String,
     title: String,
-    cover: String
+    author: String,
+    cover: String? = null,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ) {
     var elevated by remember { mutableStateOf(false) }
 
@@ -76,16 +86,45 @@ fun BookCard(
         Box(
             modifier = Modifier.fillMaxWidth()
         ) {
-            AsyncImage(
-                model = cover,
-                contentDescription = "Book Cover: $title",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(0.7f)
-                    .clip(RoundedCornerShape(8.dp))
-                    .graphicsLayer {}
-            )
+            // Book cover
+            if (cover != null && cover.isNotEmpty()) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(cover)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = "Book Cover",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(0.7f)
+                        .clip(RoundedCornerShape(8.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                // Book cover placeholder
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(0.7f)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    colorResource(id = R.color.primary).copy(alpha = 0.3f),
+                                    colorResource(id = R.color.primary).copy(alpha = 0.1f)
+                                )
+                            )
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.MenuBook,
+                        contentDescription = "Book Icon",
+                        modifier = Modifier.size(40.dp),
+                        tint = colorResource(id = R.color.primary)
+                    )
+                }
+            }
             
             // Gradient overlay at the bottom
             Box(
