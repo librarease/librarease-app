@@ -39,11 +39,12 @@ fun ForgotPasswordContent(
         Spacer(modifier = Modifier.height(8.dp))
         ActionButton(
             onActionButtonClick = {
-                val isEmailValid = email.text.isNotBlank()
+                val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$"
+                val isEmailValid = email.text.isNotBlank() && email.text.matches(Regex(emailRegex))
                 if(!isEmailValid) {
                     onEmailInvalid()
                 } else {
-                    onSendPasswordResetEmail(email.text)
+                    onSendPasswordResetEmail(email.text.trim())
                 }
             },
             enabled = !isLoading,

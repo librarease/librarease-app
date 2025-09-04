@@ -1,5 +1,6 @@
 package org.librarease.app.di.module
 
+import com.auth0.android.jwt.JWT
 import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
@@ -16,6 +17,20 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 import javax.inject.Singleton
 
+object JwtUtils {
+    fun getUserFromToken(token: String): String? {
+        return try {
+            val jwt = JWT(token)
+
+            jwt.getClaim("user_id").asString() ?:
+            jwt.getClaim("sub").asString() ?:
+            jwt.getClaim("uid").asString() ?:
+            jwt.subject
+        } catch (e: Exception) {
+            null
+        }
+    }
+}
 class FirebaseTokenProvider @Inject constructor() {
     @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun getToken(): String? = suspendCancellableCoroutine { cont ->
@@ -27,6 +42,10 @@ class FirebaseTokenProvider @Inject constructor() {
                 .addOnSuccessListener { result -> cont.resume(result.token) {} }
                 .addOnFailureListener { cont.resume(null) {} }
         }
+    }
+    suspend fun getUserID(): String? {
+        val token = getToken() ?: return null
+        return JwtUtils.getUserFromToken(token)
     }
 }
 

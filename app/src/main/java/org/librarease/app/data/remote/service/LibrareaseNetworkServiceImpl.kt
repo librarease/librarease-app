@@ -9,7 +9,7 @@ import org.librarease.app.data.remote.response.SubscriptionResponse
 import retrofit2.HttpException
 
 class LibrareaseNetworkServiceImpl(
-    private val api: LibrareaseApi
+    private val api: LibrareaseApi,
 ): LibrareaseNetworkService {
     override suspend fun getBooks(limit: Int): BookListResponse {
         return try {
@@ -70,7 +70,7 @@ class LibrareaseNetworkServiceImpl(
             api.getUserSubscriptions(userID)
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
-            emptyList<SubscriptionResponse>()
+            emptyList()
         }
     }
 }

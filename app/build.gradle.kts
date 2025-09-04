@@ -104,8 +104,11 @@ dependencies {
     implementation(libs.coil.compose.base)
     
     //DataStore for preferences
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation(libs.androidx.datastore.preferences)
 
     implementation(libs.zxing.core)
     implementation(libs.zxing.android.embedded)
+
+    //jwt
+    implementation(libs.jwtdecode)
 }

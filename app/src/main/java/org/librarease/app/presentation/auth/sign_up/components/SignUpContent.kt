@@ -155,9 +155,10 @@ fun SignUpContent(
         
         ActionButton(
             onActionButtonClick = {
-                val isEmailValid = email.text.isNotBlank()
-                val isPasswordValid = password.text.isNotBlank()
-                val isFullNameValid = fullName.text.isNotBlank()
+                val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$"
+                val isEmailValid = email.text.isNotBlank() && email.text.matches(Regex(emailRegex))
+                val isPasswordValid = password.text.isNotBlank() && password.text.length >= 6
+                val isFullNameValid = fullName.text.isNotBlank() && fullName.text.trim().length >= 2
                 val isTermsAccepted = agreeToTerms
                 
                 if (!isEmailValid) {
@@ -169,7 +170,7 @@ fun SignUpContent(
                 } else if (!isTermsAccepted) {
                     onTermsNotAccepted()
                 } else {
-                    onSignUpClick(email.text, password.text, fullName.text)
+                    onSignUpClick(email.text.trim(), password.text, fullName.text.trim())
                     keyboard?.hide()
                 }
             },

@@ -1,5 +1,6 @@
 package org.librarease.app.presentation.subscriptions
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,8 +24,11 @@ class SubscriptionViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _subscriptions.value = librareaseRepository.getUserSubscriptions(userId)
+                Log.d("##subs", "fetchUserSubscriptions: ${_subscriptions.value}")
             } catch (e: Exception) {
-                _subscriptions.value = emptyList<Subscription>()
+                Log.d("##subs", "fetchUserSubscriptions: (empty)")
+                _subscriptions.value = emptyList()
+                e.printStackTrace()
             }
         }
     }

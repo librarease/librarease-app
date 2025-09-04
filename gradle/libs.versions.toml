@@ -2,6 +2,7 @@
 agp = "8.8.0"
 coilCompose = "2.4.0"
 converterGson = "2.9.0"
+datastorePreferences = "1.1.7"
 hiltNavigationCompose = "1.2.0"
 kotlin = "2.1.20"
 coreKtx = "1.16.0"
@@ -21,12 +22,14 @@ google-services = "4.4.2"
 firebaseFirestoreKtx = "25.1.4"
 firebaseDatabaseKtx = "21.0.0"
 kotlinx-serialization = "1.7.3"
-devtoolsKsp = "1.9.22-1.0.17"
 datastoreCoreAndroid = "1.1.7"
 zxing-core = "3.5.2"
 zxing-android-embedded = "4.3.0"
+jwtdecode = "2.0.2"
 
 [libraries]
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+jwtdecode = { group = "com.auth0.android", name = "jwtdecode", version.ref = "jwtdecode"}
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }

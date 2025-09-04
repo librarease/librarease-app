@@ -1,5 +1,6 @@
 package org.librarease.app.presentation.auth.sign_up
 
+import android.util.Log
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -51,13 +52,21 @@ class SignUpViewModel @Inject constructor(
     fun onSignUpWithEmailAndPassword(email: String, password: String, fullName: String) = viewModelScope.launch {
         _isLoading.value = true
         try {
+            Log.d("SignUpViewModel", "Starting sign up process for email: $email")
             _signUpState.value = Resource.Loading
-            // For now, we're still using the existing repository method that doesn't use fullName
-            // In a real implementation, you'd want to update the repository to store the full name
-            val result = repository.signUpWithEmailAndPassword(email, password)
-            // TODO: Store the full name in the user profile after successful sign-up
-            _signUpState.value = Resource.Success(result)
+            
+            // Create user with Firebase Auth
+            repository.signUpWithEmailAndPassword(email.trim(), password)
+            Log.d("SignUpViewModel", "User created successfully in Firebase Auth")
+            
+            // TODO: Store the full name in user profile/database after successful sign-up
+            // For now, we'll just log it
+            Log.d("SignUpViewModel", "Full name to be stored: $fullName")
+            
+            _signUpState.value = Resource.Success(Unit)
+            _isLoading.value = false
         } catch (e: Exception) {
+            Log.e("SignUpViewModel", "Sign up failed: ${e.message}", e)
             _signUpState.value = Resource.Failure(e)
             _isLoading.value = false
         }

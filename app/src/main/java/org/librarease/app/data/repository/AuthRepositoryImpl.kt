@@ -1,5 +1,6 @@
 package org.librarease.app.data.repository
 
+import android.util.Log
 import org.librarease.app.domain.repository.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.channels.awaitClose
@@ -15,7 +16,14 @@ class AuthRepositoryImpl @Inject constructor(
     override val currentUser get() = auth.currentUser
 
     override suspend fun signUpWithEmailAndPassword(email: String, password: String) {
-        auth.createUserWithEmailAndPassword(email, password).await()
+        try {
+            Log.d("AuthRepository", "Attempting to create user with email: $email")
+            val result = auth.createUserWithEmailAndPassword(email.trim(), password).await()
+            Log.d("AuthRepository", "User created successfully: ${result.user?.uid}")
+        } catch (e: Exception) {
+            Log.e("AuthRepository", "Failed to create user with email $email: ${e.message}", e)
+            throw e
+        }
     }
 
     override suspend fun signInWithEmailAndPassword(email: String, password: String) {
@@ -31,7 +39,14 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun sendPasswordResetEmail(email: String) {
-        auth.sendPasswordResetEmail(email).await()
+        try {
+            Log.d("AuthRepository", "Attempting to send password reset email to: $email")
+            auth.sendPasswordResetEmail(email.trim()).await()
+            Log.d("AuthRepository", "Password reset email sent successfully to: $email")
+        } catch (e: Exception) {
+            Log.e("AuthRepository", "Failed to send password reset email to $email: ${e.message}", e)
+            throw Exception("Failed to send password reset email: ${e.message}")
+        }
     }
 
     override fun signOut() = auth.signOut()

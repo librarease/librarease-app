@@ -93,7 +93,6 @@ fun MainScreen(
                 }
             )
             "books" -> {
-                // Navigate to Books screen
                 LaunchedEffect(Unit) {
                     navigate(Route.Books)
                 }
