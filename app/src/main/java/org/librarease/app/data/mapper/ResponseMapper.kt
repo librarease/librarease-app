@@ -3,6 +3,7 @@ package org.librarease.app.data.mapper
 import org.librarease.app.data.remote.response.BookListResponse
 import org.librarease.app.data.remote.response.LibraryListResponse
 import org.librarease.app.data.remote.response.MembershipListResponse
+import org.librarease.app.data.remote.response.SubscriptionListResponse
 import org.librarease.app.data.remote.response.SubscriptionResponse
 import org.librarease.app.domain.model.BookItem
 import org.librarease.app.domain.model.Library
@@ -91,10 +92,10 @@ object ResponseMapper {
         membershipList
     }
 
-    val subscriptionListMapper: (List<SubscriptionResponse>) -> List<Subscription> = { responseList ->
+    val subscriptionListMapper: (List<SubscriptionResponse>?) -> List<Subscription> = { responseList ->
         val subscriptionList = ArrayList<Subscription>()
         
-        responseList.forEach { subscriptionResponse ->
+        responseList?.forEach { subscriptionResponse ->
             subscriptionList.add(
                 Subscription(
                     id = subscriptionResponse.id,

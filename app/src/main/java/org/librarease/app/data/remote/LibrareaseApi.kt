@@ -3,6 +3,7 @@ package org.librarease.app.data.remote
 import org.librarease.app.data.remote.response.BookListResponse
 import org.librarease.app.data.remote.response.LibraryListResponse
 import org.librarease.app.data.remote.response.MembershipListResponse
+import org.librarease.app.data.remote.response.SubscriptionListResponse
 import org.librarease.app.data.remote.response.SubscriptionResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -32,9 +33,7 @@ interface LibrareaseApi {
     ): MembershipListResponse
 
     @GET("subscriptions")
-    suspend fun getUserSubscriptions(
-        @Query("userId") userId: String
-    ): List<SubscriptionResponse>
+    suspend fun getUserSubscriptions(): SubscriptionListResponse
 
     companion object {
         const val BASE_URL = "https://librarease.org/api/v1/"

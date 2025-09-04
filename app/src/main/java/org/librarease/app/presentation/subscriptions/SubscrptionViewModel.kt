@@ -17,18 +17,25 @@ class SubscriptionViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val librareaseRepository: LibrareaseRepository
 ) : ViewModel() {
-    private val _subscriptions = MutableStateFlow<List<Subscription>?>(null)
-    val subscriptions: StateFlow<List<Subscription>?> = _subscriptions
+    private val _subscriptionsState = MutableStateFlow<SubscriptionsScreenState>(
+        SubscriptionsScreenState.Loading)
+    val subscriptionState: StateFlow<SubscriptionsScreenState> = _subscriptionsState
 
-    fun fetchSubscriptions(userId: String) {
+
+    init {
+        fetchUserSubscriptions()
+    }
+
+    fun fetchSubscriptions() {
         viewModelScope.launch {
+            _subscriptionsState.value = SubscriptionsScreenState.Loading
             try {
-                _subscriptions.value = librareaseRepository.getUserSubscriptions(userId)
-                Log.d("##subs", "fetchUserSubscriptions: ${_subscriptions.value}")
+                val subscriptions = librareaseRepository.getUserSubscriptions()
+                _subscriptionsState.value = SubscriptionsScreenState.Success(subscriptions)
+                Log.d("##subs", "fetchUserSubscriptions: $subscriptions")
             } catch (e: Exception) {
-                Log.d("##subs", "fetchUserSubscriptions: (empty)")
-                _subscriptions.value = emptyList()
-                e.printStackTrace()
+                _subscriptionsState.value = SubscriptionsScreenState.Error(e.message ?: "Unknown error")
+                Log.e("##subs", "Error fetching subscriptions", e)
             }
         }
     }
@@ -36,9 +43,9 @@ class SubscriptionViewModel @Inject constructor(
     fun fetchUserSubscriptions() {
         val currentUser = authRepository.currentUser
         if (currentUser != null) {
-            fetchSubscriptions(currentUser.uid)
+            fetchSubscriptions()
         } else {
-            _subscriptions.value = emptyList()
+            _subscriptionsState.value = SubscriptionsScreenState.Error("User not authenticated")
         }
     }
 }

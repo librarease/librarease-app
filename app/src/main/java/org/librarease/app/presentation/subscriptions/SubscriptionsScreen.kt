@@ -22,17 +22,12 @@ fun SubscriptionsScreen(
     navigateBack: () -> Unit,
     viewModel: SubscriptionViewModel = hiltViewModel()
 ) {
-    val subscriptionsState by viewModel.subscriptions.collectAsState()
-    
-    // Fetch subscriptions when screen loads
-    LaunchedEffect(Unit) {
-        viewModel.fetchUserSubscriptions()
-    }
-    
+    val subscriptionsState by viewModel.subscriptionState.collectAsState()
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("My Subscriptions") },
+                title = { Text("my subscriptions") },
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
@@ -47,9 +42,8 @@ fun SubscriptionsScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            when {
-                subscriptionsState == null -> {
-                    // Loading state
+            when (val state = subscriptionsState) {
+                is SubscriptionsScreenState.Loading -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -57,15 +51,42 @@ fun SubscriptionsScreen(
                         CircularProgressIndicator()
                     }
                 }
-                
-                !subscriptionsState.isNullOrEmpty() -> {
-                    // Success state with data
-                    SubscriptionsContent(subscriptions = subscriptionsState!!)
+
+                is SubscriptionsScreenState.Success -> {
+                    val subscriptions = state.subscriptions
+                    if (subscriptions.isNotEmpty()) {
+                        SubscriptionsContent(subscriptions = subscriptions)
+                    } else {
+                        EmptySubscriptionsContent()
+                    }
                 }
-                
-                else -> {
-                    // Empty state
-                    EmptySubscriptionsContent()
+
+                is SubscriptionsScreenState.Error -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Text(
+                                text = "Error",
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            Text(
+                                text = state.message,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+
+                            Button(onClick = { viewModel.fetchSubscriptions() }) {
+                                Text("Retry")
+                            }
+                        }
+                    }
                 }
             }
         }

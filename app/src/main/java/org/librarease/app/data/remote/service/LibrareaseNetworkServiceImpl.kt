@@ -6,10 +6,12 @@ import org.librarease.app.data.remote.response.BookListResponse
 import org.librarease.app.data.remote.response.LibraryListResponse
 import org.librarease.app.data.remote.response.MembershipListResponse
 import org.librarease.app.data.remote.response.SubscriptionResponse
+import org.librarease.app.di.module.FirebaseTokenProvider
 import retrofit2.HttpException
+import javax.inject.Inject
 
-class LibrareaseNetworkServiceImpl(
-    private val api: LibrareaseApi,
+class LibrareaseNetworkServiceImpl (
+    private val api: LibrareaseApi
 ): LibrareaseNetworkService {
     override suspend fun getBooks(limit: Int): BookListResponse {
         return try {
@@ -65,11 +67,13 @@ class LibrareaseNetworkServiceImpl(
         }
     }
 
-    override suspend fun getUserSubscriptions(userID: String): List<SubscriptionResponse> {
+    override suspend fun getUserSubscriptions(): List<SubscriptionResponse>? {
         return try {
-            api.getUserSubscriptions(userID)
+            val response = api.getUserSubscriptions()
+            Log.d("###subs", "API response: $response")
+            response.subscriptions
         } catch (e: java.lang.Exception) {
-            e.printStackTrace()
+            Log.e("###subs", "Error fetching subscriptions", e)
             emptyList()
         }
     }

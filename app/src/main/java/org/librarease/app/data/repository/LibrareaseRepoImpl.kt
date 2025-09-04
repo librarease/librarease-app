@@ -40,8 +40,8 @@ class LibrareaseRepoImpl @Inject constructor(
         return ResponseMapper.membershipListMapper(response)
     }
     
-    override suspend fun getUserSubscriptions(userId: String): List<Subscription> {
-        val response = networkService.getUserSubscriptions(userId)
+    override suspend fun getUserSubscriptions(): List<Subscription> {
+        val response = networkService.getUserSubscriptions()
         return ResponseMapper.subscriptionListMapper(response)
     }
 }

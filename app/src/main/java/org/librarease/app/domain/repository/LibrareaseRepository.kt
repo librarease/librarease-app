@@ -17,5 +17,5 @@ interface LibrareaseRepository {
     
     suspend fun getMemberships(libraryId: String): List<Membership>
     
-    suspend fun getUserSubscriptions(userId: String):List<Subscription>
+    suspend fun getUserSubscriptions(): List<Subscription>
 }
