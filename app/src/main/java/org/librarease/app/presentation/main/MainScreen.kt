@@ -4,8 +4,11 @@ import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Book
+import androidx.compose.material.icons.filled.Cached
 import androidx.compose.material.icons.filled.LibraryBooks
 import androidx.compose.material.icons.filled.LocalLibrary
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Subscriptions
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -37,11 +40,11 @@ fun MainScreen(
 
     val categoryList = listOf(
         CategoryItem(
-            Icons.Default.Book,
+            Icons.Default.MenuBook,
             "Books"
         ),
         CategoryItem(
-            Icons.Filled.LocalLibrary,
+            Icons.Filled.LocationOn,
             "Libraries"
         ),
         CategoryItem(
@@ -49,7 +52,7 @@ fun MainScreen(
             "Subscriptions"
         ),
         CategoryItem(
-            Icons.Filled.LibraryBooks,
+            Icons.Filled.Cached,
             "Borrowings"
         )
     )

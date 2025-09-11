@@ -54,13 +54,15 @@ fun MainAppBar(
         title = {
             Text(
                 text = stringResource(id = R.string.app_name),
-                color = colorResource(id = R.color.primary),
+                color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = Color.White,
+            navigationIconContentColor = Color.White
         ),
         modifier = Modifier.shadow(elevation = 4.dp),
         actions = {
@@ -69,7 +71,7 @@ fun MainAppBar(
                     imageVector = if (ThemeController.themeMode == ThemeMode.DARK) 
                         Icons.Filled.LightMode else Icons.Filled.DarkMode,
                     contentDescription = "Toggle theme",
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = Color.White
                 )
             }
             
@@ -78,7 +80,7 @@ fun MainAppBar(
                     Icon(
                         imageVector = Icons.Outlined.MoreVert,
                         contentDescription = "Menu",
-                        tint = colorResource(id = R.color.primary)
+                        tint = Color.White
                     )
                 }
 

@@ -9,7 +9,6 @@ import org.librarease.app.domain.model.BookItem
 import org.librarease.app.domain.model.Library
 import org.librarease.app.domain.model.Membership
 import org.librarease.app.domain.model.Subscription
-import org.librarease.app.domain.model.SubscriptionStatus
 
 object ResponseMapper {
 
@@ -92,28 +91,28 @@ object ResponseMapper {
         membershipList
     }
 
-    val subscriptionListMapper: (List<SubscriptionResponse>?) -> List<Subscription> = { responseList ->
+    val subscriptionListMapper: (SubscriptionListResponse) -> List<Subscription> = { responseList ->
         val subscriptionList = ArrayList<Subscription>()
         
-        responseList?.forEach { subscriptionResponse ->
+        responseList.subscriptions?.forEach { subscription ->
             subscriptionList.add(
                 Subscription(
-                    id = subscriptionResponse.id,
-                    name = subscriptionResponse.name,
-                    libraryId = subscriptionResponse.libraryId,
-                    libraryName = subscriptionResponse.libraryName,
-                    status = when (subscriptionResponse.status.lowercase()) {
-                        "active" -> SubscriptionStatus.ACTIVE
-                        "expired" -> SubscriptionStatus.EXPIRED
-                        "suspended" -> SubscriptionStatus.SUSPENDED
-                        "pending" -> SubscriptionStatus.PENDING
-                        else -> SubscriptionStatus.ACTIVE
-                    },
-                    subscriptionDate = subscriptionResponse.subscriptionDate,
-                    expiryDate = subscriptionResponse.expiryDate,
-                    membershipType = subscriptionResponse.membershipType
+                    id = subscription.id.orEmpty(),
+                    userId = subscription.userId.orEmpty(),
+                    userName = subscription.user?.name.orEmpty(),
+                    membershipId = subscription.membershipId.orEmpty(),
+                    membershipName = subscription.membership?.name.orEmpty(),
+                    libraryId = subscription.membership?.library?.id.orEmpty(),
+                    libraryName = subscription.membership?.library?.name.orEmpty(),
+                    createdDate = subscription.createdDate.orEmpty(),
+                    expireDate = subscription.expireDate.orEmpty(),
+                    amount = subscription.amount ?: 0,
+                    finePerDay = subscription.finePerDay ?: 0,
+                    loanPeriod = subscription.loanPeriod ?: 0,
+                    activeLoanLimit = subscription.activeLoanLimit ?: 0
                 )
             )
+
         }
         
         subscriptionList

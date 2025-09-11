@@ -11,6 +11,7 @@ import org.librarease.app.domain.repository.AuthRepository
 import org.librarease.app.domain.repository.LibrareaseRepository
 import javax.inject.Inject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.update
 
 @HiltViewModel
 class SubscriptionViewModel @Inject constructor(

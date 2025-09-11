@@ -5,13 +5,15 @@ import org.librarease.app.data.remote.LibrareaseApi
 import org.librarease.app.data.remote.response.BookListResponse
 import org.librarease.app.data.remote.response.LibraryListResponse
 import org.librarease.app.data.remote.response.MembershipListResponse
+import org.librarease.app.data.remote.response.SubscriptionListResponse
 import org.librarease.app.data.remote.response.SubscriptionResponse
 import org.librarease.app.di.module.FirebaseTokenProvider
 import retrofit2.HttpException
 import javax.inject.Inject
 
-class LibrareaseNetworkServiceImpl (
-    private val api: LibrareaseApi
+class LibrareaseNetworkServiceImpl @Inject constructor (
+    private val api: LibrareaseApi,
+    private val tokenProvider: FirebaseTokenProvider
 ): LibrareaseNetworkService {
     override suspend fun getBooks(limit: Int): BookListResponse {
         return try {
@@ -67,14 +69,17 @@ class LibrareaseNetworkServiceImpl (
         }
     }
 
-    override suspend fun getUserSubscriptions(): List<SubscriptionResponse>? {
+    override suspend fun getUserSubscriptions(): SubscriptionListResponse {
         return try {
-            val response = api.getUserSubscriptions()
-            Log.d("###subs", "API response: $response")
-            response.subscriptions
-        } catch (e: java.lang.Exception) {
+            val userId = tokenProvider.getUserID()
+                ?: throw Exception("User id not found in token ")
+            Log.d("###subs", "Calling API with userId: $userId")
+            val response = api.getUserSubscriptions(userId)
+            Log.d("###subs", "API response: ${response.subscriptions}")
+            response
+        } catch (e: Exception) {
             Log.e("###subs", "Error fetching subscriptions", e)
-            emptyList()
-        }
+        } as SubscriptionListResponse
     }
+
 }

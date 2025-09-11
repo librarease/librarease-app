@@ -3,6 +3,7 @@ package org.librarease.app.data.remote.service
 import org.librarease.app.data.remote.response.BookListResponse
 import org.librarease.app.data.remote.response.LibraryListResponse
 import org.librarease.app.data.remote.response.MembershipListResponse
+import org.librarease.app.data.remote.response.SubscriptionListResponse
 import org.librarease.app.data.remote.response.SubscriptionResponse
 
 interface LibrareaseNetworkService {
@@ -16,5 +17,5 @@ interface LibrareaseNetworkService {
     
     suspend fun getMemberships(libraryId: String): MembershipListResponse
 
-    suspend fun getUserSubscriptions(): List<SubscriptionResponse>?
+    suspend fun getUserSubscriptions(): SubscriptionListResponse
 }

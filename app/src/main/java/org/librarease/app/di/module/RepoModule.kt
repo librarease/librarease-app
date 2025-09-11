@@ -17,6 +17,7 @@ import org.librarease.app.data.repository.AuthRepositoryImpl
 import org.librarease.app.data.repository.LibrareaseRepoImpl
 import org.librarease.app.domain.repository.AuthRepository
 import org.librarease.app.domain.repository.LibrareaseRepository
+import org.librarease.app.di.module.AuthInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -26,27 +27,16 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-
-    @Provides
-    @Singleton
-    fun provideFirebaseTokenProvider(): FirebaseTokenProvider {
-        return FirebaseTokenProvider()
-    }
-
-    @Provides
-    @Singleton
-    fun provideAuthInterceptor(
-        tokenProvider: FirebaseTokenProvider
-    ): AuthInterceptor {
-        return AuthInterceptor(tokenProvider)
-    }
-
     @Provides
     @Singleton
     fun provideOkHttpClient(
         authInterceptor: AuthInterceptor // <- Injected here
     ): OkHttpClient {
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.HEADERS
+        }
         return OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
             .addInterceptor(authInterceptor) // <- Attached to client
             .build()
     }
@@ -67,8 +57,8 @@ object NetworkModule {
     
     @Provides
     @Singleton
-    fun provideLibrareaseNetworkService(api: LibrareaseApi): LibrareaseNetworkService {
-        return LibrareaseNetworkServiceImpl(api)
+    fun provideLibrareaseNetworkService(api: LibrareaseApi, tokenProvider: FirebaseTokenProvider): LibrareaseNetworkService {
+        return LibrareaseNetworkServiceImpl(api, tokenProvider)
     }
 }
 
@@ -77,6 +67,20 @@ object NetworkModule {
 class AppModule {
     @Provides
     fun provideFirebaseAuth() = FirebaseAuth.getInstance()
+
+    @Provides
+    @Singleton
+    fun provideFirebaseTokenProvider(): FirebaseTokenProvider {
+        return FirebaseTokenProvider()
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthInterceptor(
+        tokenProvider: FirebaseTokenProvider
+    ): AuthInterceptor {
+        return AuthInterceptor(tokenProvider)
+    }
 
     @Provides
     @ViewModelScoped
