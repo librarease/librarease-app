@@ -19,4 +19,6 @@ interface AuthRepository {
     fun signOut()
 
     fun getAuthState(): Flow<Boolean>
+
+    suspend fun sendFcmToken(fcmToken: String): Boolean
 }

@@ -6,12 +6,15 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import org.librarease.app.data.remote.service.LibrareaseNetworkService
+import org.librarease.app.data.remote.service.LibrareaseNetworkServiceImpl
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val networkService: LibrareaseNetworkService
 ) : AuthRepository {
     override val currentUser get() = auth.currentUser
 
@@ -59,6 +62,10 @@ class AuthRepositoryImpl @Inject constructor(
         awaitClose {
             auth.removeAuthStateListener(authStateListener)
         }
+    }
+
+    override suspend fun sendFcmToken(fcmToken: String): Boolean {
+        return networkService.sendFcmToken(fcmToken)
     }
 
 }

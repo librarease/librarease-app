@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.librarease.app.presentation.main.PushTokenState
 import javax.inject.Inject
 
 typealias SignUpResponse = Resource<Unit>
@@ -36,6 +37,9 @@ class SignUpViewModel @Inject constructor(
     private val _signUpState = MutableStateFlow<SignUpResponse>(Resource.Idle)
     val signUpState: StateFlow<SignUpResponse> = _signUpState.asStateFlow()
 
+    private val _fcmTokenState = MutableStateFlow<PushTokenState>(PushTokenState.Idle)
+    val fcmTokenState: StateFlow<PushTokenState> = _fcmTokenState
+
 
     fun onEmailChange(newEmail: TextFieldValue) {
         _email.value = newEmail
@@ -52,17 +56,8 @@ class SignUpViewModel @Inject constructor(
     fun onSignUpWithEmailAndPassword(email: String, password: String, fullName: String) = viewModelScope.launch {
         _isLoading.value = true
         try {
-            Log.d("SignUpViewModel", "Starting sign up process for email: $email")
             _signUpState.value = Resource.Loading
-            
-            // Create user with Firebase Auth
             repository.signUpWithEmailAndPassword(email.trim(), password)
-            Log.d("SignUpViewModel", "User created successfully in Firebase Auth")
-            
-            // TODO: Store the full name in user profile/database after successful sign-up
-            // For now, we'll just log it
-            Log.d("SignUpViewModel", "Full name to be stored: $fullName")
-            
             _signUpState.value = Resource.Success(Unit)
             _isLoading.value = false
         } catch (e: Exception) {
@@ -72,4 +67,22 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
+    fun sendFcmToken(token: String) {
+        viewModelScope.launch {
+            _fcmTokenState.value = PushTokenState.Loading
+            try {
+                val success = repository.sendFcmToken(token)
+                if (success) {
+                    _fcmTokenState.value = PushTokenState.Success
+                    Log.d("##token", "Push token successfully ")
+                } else {
+                    _fcmTokenState.value = PushTokenState.Error("Failed to send push token")
+                    Log.e("###token", "Failed to send push token")
+                }
+            } catch (e: Exception) {
+                _fcmTokenState.value = PushTokenState.Error(e.message ?: "Unknown error")
+                Log.e("##token", "Failed to push token ",)
+            }
+        }
+    }
 }

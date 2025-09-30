@@ -57,7 +57,6 @@ fun AllBooksScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val hasMoreBooks by viewModel.hasMoreBooks.collectAsState()
     
-    // Load initial books when entering this screen
     LaunchedEffect(key1 = Unit) {
         viewModel.loadInitialBooks()
     }
@@ -108,7 +107,6 @@ fun AllBooksScreen(
             Box(modifier = Modifier.fillMaxSize()) {
                 val gridState = rememberLazyGridState()
                 
-                // Check if we need to load more books
                 val shouldLoadMore = remember {
                     derivedStateOf {
                         val lastVisibleItem = gridState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
@@ -117,7 +115,6 @@ fun AllBooksScreen(
                     }
                 }
                 
-                // Trigger loading more books when reaching near the end
                 LaunchedEffect(shouldLoadMore.value) {
                     if (shouldLoadMore.value) {
                         viewModel.loadMoreBooks()
@@ -148,7 +145,6 @@ fun AllBooksScreen(
                     }
                 }
                 
-                // Loading indicator at the bottom
                 if (isLoading) {
                     CircularProgressIndicator(
                         modifier = Modifier

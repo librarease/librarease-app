@@ -18,4 +18,6 @@ interface LibrareaseNetworkService {
     suspend fun getMemberships(libraryId: String): MembershipListResponse
 
     suspend fun getUserSubscriptions(): SubscriptionListResponse
+
+    suspend fun sendFcmToken(token: String): Boolean
 }

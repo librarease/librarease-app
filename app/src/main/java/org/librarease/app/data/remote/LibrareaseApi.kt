@@ -1,11 +1,14 @@
 package org.librarease.app.data.remote
 
+import okhttp3.Response
+import org.librarease.app.data.remote.request.FcmTokenRequest
 import org.librarease.app.data.remote.response.BookListResponse
 import org.librarease.app.data.remote.response.LibraryListResponse
 import org.librarease.app.data.remote.response.MembershipListResponse
 import org.librarease.app.data.remote.response.SubscriptionListResponse
-import org.librarease.app.data.remote.response.SubscriptionResponse
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -36,6 +39,11 @@ interface LibrareaseApi {
     suspend fun getUserSubscriptions(
         @Query("user_id") userID: String
     ): SubscriptionListResponse
+
+    @POST("users/me/push-token")
+    suspend fun sendFcmToken(
+        @Body request: FcmTokenRequest
+    ): retrofit2.Response<Unit>
 
     companion object {
         const val BASE_URL = "https://librarease.org/api/v1/"

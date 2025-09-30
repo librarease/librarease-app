@@ -2,6 +2,7 @@ package org.librarease.app.data.remote.service
 
 import android.util.Log
 import org.librarease.app.data.remote.LibrareaseApi
+import org.librarease.app.data.remote.request.FcmTokenRequest
 import org.librarease.app.data.remote.response.BookListResponse
 import org.librarease.app.data.remote.response.LibraryListResponse
 import org.librarease.app.data.remote.response.MembershipListResponse
@@ -80,6 +81,21 @@ class LibrareaseNetworkServiceImpl @Inject constructor (
         } catch (e: Exception) {
             Log.e("###subs", "Error fetching subscriptions", e)
         } as SubscriptionListResponse
+    }
+
+    override suspend fun sendFcmToken(token: String): Boolean {
+        return try {
+            val request = FcmTokenRequest(
+                token = token,
+                provider = "fcm"
+            )
+            val response = api.sendFcmToken(request)
+            Log.d("##network", "Push token response: ${response.code()}")
+            response.isSuccessful
+        } catch (e: Exception) {
+            Log.e("###network", "Error sending push token", e)
+            false
+        }
     }
 
 }
