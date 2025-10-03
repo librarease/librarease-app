@@ -1,5 +1,6 @@
 package org.librarease.app.presentation.auth.sign_up
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -44,7 +45,28 @@ fun SignUpScreen(
     val invalidEmailMessage = stringResource(R.string.invalid_email_message)
     val invalidPasswordMessage = stringResource(R.string.invalid_password_message)
     val accountCreatedMessage = stringResource(R.string.account_created_message)
-    val emailVerificationSentMessage = stringResource(R.string.email_verification_sent_message)
+    val signUpState by viewModel.signUpState.collectAsState()
+
+    // ... your UI code for text fields, buttons, etc.
+
+    // This LaunchedEffect will react to changes in signUpState
+    LaunchedEffect(signUpState) {
+        when (val state = signUpState) {
+            is Resource.Success -> {
+                // Sign up was successful, now trigger the push token sync
+                viewModel.onSignUpSuccess(context)
+
+                // You can now navigate to the home screen or show a success message
+                // navController.navigate("home")
+            }
+            is Resource.Failure -> {
+                // Show an error message from state.exception
+            }
+            // Handle other states if needed
+            else -> {}
+        }
+    }
+
 
     Scaffold(
         topBar = {

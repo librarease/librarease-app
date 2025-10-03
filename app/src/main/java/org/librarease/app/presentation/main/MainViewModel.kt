@@ -177,10 +177,4 @@ class MainViewModel @Inject constructor(
     }
 }
 
-    sealed class PushTokenState {
-        object Idle : PushTokenState()
-        object Loading : PushTokenState()
-        object Success : PushTokenState()
-        data class Error(val message: String) : PushTokenState()
-    }
 

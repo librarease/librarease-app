@@ -2,6 +2,7 @@ package org.librarease.app.presentation.main.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -46,6 +47,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.platform.LocalContext
 import org.librarease.app.R
+import org.librarease.app.domain.model.BookItem
 
 @Composable
 fun BookCard(
@@ -53,12 +55,13 @@ fun BookCard(
     author: String,
     cover: String? = null,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
+    onClick: (BookItem) -> Unit = {}
 ) {
     var elevated by remember { mutableStateOf(false) }
 
     Card(
         modifier = modifier
+            .clickable { onClick }
             .width(140.dp)
             .wrapContentHeight()
             .padding(4.dp)

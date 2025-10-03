@@ -101,25 +101,19 @@ fun MainScreen(
                 }
             }
             "libraries" -> {
-                // Navigate to Libraries screen
                 LaunchedEffect(Unit) {
                     navigate(Route.Libraries)
                 }
             }
             "subscriptions" -> {
-                // Navigate to Subscriptions screen
                 LaunchedEffect(Unit) {
                     navigate(Route.Subscriptions)
                 }
             }
             "borrowings" -> {
-                // Navigate to Borrowings screen
                 LaunchedEffect(Unit) {
                     navigate(Route.Borrowings)
                 }
-            }
-            "profile" -> {
-                ProfileScreen()
             }
             "settings" -> {}
         }

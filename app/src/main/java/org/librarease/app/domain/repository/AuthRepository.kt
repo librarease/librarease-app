@@ -21,4 +21,6 @@ interface AuthRepository {
     fun getAuthState(): Flow<Boolean>
 
     suspend fun sendFcmToken(fcmToken: String): Boolean
+
+    suspend fun getFcmToken(): String?
 }

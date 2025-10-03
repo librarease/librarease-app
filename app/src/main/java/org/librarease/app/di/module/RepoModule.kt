@@ -25,28 +25,37 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object NetworkModule {
+object AppModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(
-        authInterceptor: AuthInterceptor // <- Injected here
-    ): OkHttpClient {
+    fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
+
+    @Provides
+    @Singleton
+    fun provideFirebaseTokenProvider(): FirebaseTokenProvider = FirebaseTokenProvider()
+
+    @Provides
+    @Singleton
+    fun provideAuthInterceptor(tokenProvider: FirebaseTokenProvider): AuthInterceptor =
+        AuthInterceptor(tokenProvider)
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.HEADERS
         }
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .addInterceptor(authInterceptor) // <- Attached to client
+            .addInterceptor(authInterceptor)
             .build()
     }
-
 
     @Provides
     @Singleton
     fun provideLibrareaseApi(okHttpClient: OkHttpClient): LibrareaseApi {
         val gson = GsonBuilder().create()
-        
         return Retrofit.Builder()
             .baseUrl(LibrareaseApi.BASE_URL)
             .client(okHttpClient)
@@ -54,47 +63,24 @@ object NetworkModule {
             .build()
             .create(LibrareaseApi::class.java)
     }
-    
-    @Provides
-    @Singleton
-    fun provideLibrareaseNetworkService(api: LibrareaseApi, tokenProvider: FirebaseTokenProvider): LibrareaseNetworkService {
-        return LibrareaseNetworkServiceImpl(api, tokenProvider)
-    }
-}
-
-@Module
-@InstallIn(ViewModelComponent::class)
-class AppModule {
-    @Provides
-    fun provideFirebaseAuth() = FirebaseAuth.getInstance()
 
     @Provides
     @Singleton
-    fun provideFirebaseTokenProvider(): FirebaseTokenProvider {
-        return FirebaseTokenProvider()
-    }
-
-    @Provides
-    @Singleton
-    fun provideAuthInterceptor(
+    fun provideLibrareaseNetworkService(
+        api: LibrareaseApi,
         tokenProvider: FirebaseTokenProvider
-    ): AuthInterceptor {
-        return AuthInterceptor(tokenProvider)
-    }
+    ): LibrareaseNetworkService = LibrareaseNetworkServiceImpl(api, tokenProvider)
 
     @Provides
-    @ViewModelScoped
+    @Singleton
     fun provideAuthRepository(
-        auth: FirebaseAuth
-    ): AuthRepository = AuthRepositoryImpl(
-        auth = auth
-    )
-    
+        auth: FirebaseAuth,
+        networkService: LibrareaseNetworkService
+    ): AuthRepository = AuthRepositoryImpl(auth, networkService)
+
     @Provides
-    @ViewModelScoped
+    @Singleton
     fun provideLibrareaseRepository(
         networkService: LibrareaseNetworkService
-    ): LibrareaseRepository = LibrareaseRepoImpl(
-        networkService = networkService
-    )
+    ): LibrareaseRepository = LibrareaseRepoImpl(networkService)
 }

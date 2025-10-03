@@ -3,13 +3,17 @@ package org.librarease.app.data.repository
 import android.util.Log
 import org.librarease.app.domain.repository.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.messaging.FirebaseMessaging
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
 import org.librarease.app.data.remote.service.LibrareaseNetworkService
 import org.librarease.app.data.remote.service.LibrareaseNetworkServiceImpl
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.resume
 
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
@@ -23,6 +27,15 @@ class AuthRepositoryImpl @Inject constructor(
             Log.d("AuthRepository", "Attempting to create user with email: $email")
             val result = auth.createUserWithEmailAndPassword(email.trim(), password).await()
             Log.d("AuthRepository", "User created successfully: ${result.user?.uid}")
+            if(result.user != null) {
+                val fcmToken = getFcmToken()
+                if(fcmToken != null) {
+                    sendFcmToken(fcmToken)
+                }
+                true
+            } else {
+                false
+            }
         } catch (e: Exception) {
             Log.e("AuthRepository", "Failed to create user with email $email: ${e.message}", e)
             throw e
@@ -30,7 +43,21 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun signInWithEmailAndPassword(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password).await()
+        try { val result = auth.signInWithEmailAndPassword(email, password).await()
+            Log.d("AuthRepository", "User sign in successfully: ${result.user?.uid}")
+            if(result.user != null) {
+                val fcmToken = getFcmToken()
+                if(fcmToken != null) {
+                    sendFcmToken(fcmToken)
+                }
+                true
+            } else {
+                false
+            }
+        } catch (e: Exception) {
+            throw e
+        }
+
     }
 
     override suspend fun deleteUser() {
@@ -66,6 +93,17 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun sendFcmToken(fcmToken: String): Boolean {
         return networkService.sendFcmToken(fcmToken)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override suspend fun getFcmToken(): String? = suspendCancellableCoroutine { continuation ->
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if(task.isSuccessful) {
+                continuation.resume(task.result, null)
+            } else {
+                continuation.resume(null)
+            }
+        }
     }
 
 }

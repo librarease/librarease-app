@@ -1,5 +1,7 @@
 package org.librarease.app.presentation.navigation
 
+import android.net.Uri
+
 sealed class Route(val route: String) {
     data object SignIn : Route("sign_in")
     data object ForgotPassword : Route("forgot_password")
@@ -17,8 +19,11 @@ sealed class Route(val route: String) {
     data object Subscriptions: Route("subscriptions")
 
     data object Borrowings: Route("borrowings")
+
+    data object SubscriptionQR: Route("subscription_qr/{subscriptionId}") {
+        fun createRoute(subscriptionId: String) = "subscription_qr/${Uri.encode(subscriptionId)}"
+    }
     
-    // Custom constructor for library detail with library ID only
     class LibraryDetailWithId(libraryId: String) : Route("library_detail/$libraryId")
 
     override fun toString(): String = route

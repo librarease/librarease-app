@@ -1,11 +1,11 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.kotlinAndroid)
     id("com.google.gms.google-services")
-    id("org.jetbrains.kotlin.kapt")
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -37,6 +37,9 @@ android {
             if (requested.group == "com.squareup" && requested.name == "javapoet") {
                 useVersion("1.13.0")
                 because("Avoid canonicalName() missing method error")
+            }
+            if(requested.group == "org.jetbrains.kotlin") {
+                useVersion("2.1.20")
             }
         }
     }
@@ -94,7 +97,6 @@ dependencies {
 
     //hilt
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
 
     //firebase
     implementation(platform(libs.firebase.bom))
@@ -113,4 +115,9 @@ dependencies {
     //jwt
     implementation(libs.jwtdecode)
 
+    implementation(libs.work.runtime.ktx)
+    implementation(libs.hilt.work)
+
+    ksp(libs.hilt.compiler)
+    ksp(libs.hilt.work.compiler)
 }

@@ -67,7 +67,6 @@ fun SignUpContent(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // App Logo
         Icon(
             imageVector = Icons.Filled.MenuBook,
             contentDescription = "Librarease Logo",

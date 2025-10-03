@@ -42,11 +42,10 @@ fun generateQrCode(content: String, size: Int = 512): Bitmap {
 
 sealed class MainNavItem(val label: String, val icon: ImageVector, val route: String) {
     object Home: MainNavItem("Home", Icons.Filled.Home, "home")
-    object Profile: MainNavItem("My QR", Icons.Filled.QrCode2, "profile")
     object Settings: MainNavItem("Settings", Icons.Filled.Settings, "settings")
 
     companion object {
-        val items = listOf(Home, Profile, Settings)
+        val items = listOf(Home, Settings)
     }
 }
 

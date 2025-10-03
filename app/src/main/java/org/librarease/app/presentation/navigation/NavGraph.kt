@@ -1,9 +1,11 @@
 package org.librarease.app.presentation.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -30,6 +32,7 @@ import org.librarease.app.presentation.main.MainScreen
 import org.librarease.app.presentation.main.MainViewModel
 import org.librarease.app.presentation.profile.ProfileScreen
 import org.librarease.app.presentation.profile.ProfileViewmodel
+import org.librarease.app.presentation.subscriptions.SubscriptionQRScreen
 import org.librarease.app.presentation.subscriptions.SubscriptionsScreen
 
 @Composable
@@ -50,9 +53,7 @@ fun AppNavGraph(
             )
         }
         composable(Route.SignIn.route) {
-            val viewModel: SignInViewModel = hiltViewModel()
             SignInScreen(
-                viewModel = viewModel,
                 navigate = { route -> navController.navigate(route.route) },
                 navigateAndClear = navController::navigateAndClear
             )
@@ -65,26 +66,9 @@ fun AppNavGraph(
             )
         }
         composable(Route.SignUp.route) {
-            val viewModel: SignUpViewModel = hiltViewModel()
             SignUpScreen(
-                viewModel = viewModel,
                 navigateBack = navController::navigateUp,
                 navigateAndClear = navController::navigateAndClear
-            )
-        }
-//        composable(Route.VerifyEmail.route) {
-//            val viewModel: VerifyEmailViewModel = hiltViewModel()
-//            VerifyEmailScreen(
-//                viewModel = viewModel,
-//                navigateAndClear = navController::navigateAndClear
-//            )
-//        }
-//
-        composable(Route.AllBooks.route) {
-            val viewModel: MainViewModel = hiltViewModel()
-            AllBooksScreen(
-                viewModel = viewModel,
-                navigateBack = navController::navigateUp
             )
         }
 
@@ -112,7 +96,21 @@ fun AppNavGraph(
 
         composable(Route.Subscriptions.route) {
             SubscriptionsScreen(
-                navigateBack = navController::navigateUp
+                navigateBack = navController::navigateUp,
+                onSubscriptionClick = { subscriptionId ->
+                    navController.navigate(Route.SubscriptionQR.createRoute(subscriptionId))
+                }
+            )
+        }
+
+        composable(
+            route = Route.SubscriptionQR.route,
+            arguments = listOf(navArgument("subscriptionId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val subscriptionId = backStackEntry.arguments?.getString("subscriptionId") ?: ""
+            SubscriptionQRScreen(
+                innerPadding = PaddingValues(0.dp),
+                subscriptionId = subscriptionId
             )
         }
 

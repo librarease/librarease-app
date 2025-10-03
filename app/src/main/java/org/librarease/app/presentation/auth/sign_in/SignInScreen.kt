@@ -1,6 +1,7 @@
 package org.librarease.app.presentation.auth.sign_in
 
 import android.app.Activity
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,7 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import org.librarease.app.R
-import org.librarease.app.common.LoadingIndicator
 import org.librarease.app.core.Resource
 import org.librarease.app.core.logErrorMessage
 import org.librarease.app.core.showToastMessage
@@ -38,6 +38,7 @@ fun SignInScreen(
     navigateAndClear: (Route) -> Unit
 ) {
     val context = LocalContext.current
+    val signInState by viewModel.signInState.collectAsState()
     val activity = context as Activity
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
@@ -47,6 +48,17 @@ fun SignInScreen(
 
     BackHandler {
         activity.finish()
+    }
+
+    LaunchedEffect(signInState) {
+        when (val state = signInState) {
+            is Resource.Success -> {
+                viewModel.onSignInSuccess(context)
+            }
+            is Resource.Failure -> {
+            }
+            else -> {}
+        }
     }
 
     Scaffold(

@@ -1,6 +1,7 @@
 package org.librarease.app.presentation.subscriptions
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -27,7 +28,8 @@ import org.librarease.app.domain.model.Subscription
 @Composable
 fun SubscriptionsScreen(
     navigateBack: () -> Unit,
-    viewModel: SubscriptionViewModel = hiltViewModel()
+    viewModel: SubscriptionViewModel = hiltViewModel(),
+    onSubscriptionClick: (String) -> Unit
 ) {
     val subscriptionsState by viewModel.subscriptionState.collectAsState()
 
@@ -67,7 +69,10 @@ fun SubscriptionsScreen(
                 is SubscriptionsScreenState.Success -> {
                     val subscriptions = state.subscriptions
                     if (subscriptions.isNotEmpty()) {
-                        SubscriptionsContent(subscriptions = subscriptions)
+                        SubscriptionsContent(
+                            subscriptions = subscriptions,
+                            onClick = { subscription -> onSubscriptionClick(subscription.id) }
+                        )
                     } else {
                         EmptySubscriptionsContent()
                     }
@@ -107,7 +112,8 @@ fun SubscriptionsScreen(
 
 @Composable
 private fun SubscriptionsContent(
-    subscriptions: List<Subscription>
+    subscriptions: List<Subscription>,
+    onClick: (Subscription) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -116,7 +122,13 @@ private fun SubscriptionsContent(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(subscriptions) { subscription ->
-            SubscriptionCard(subscription = subscription, modifier = Modifier)
+            SubscriptionCard(
+                subscription = subscription,
+                modifier = Modifier,
+                onClick = {
+                    onClick(subscription)
+                }
+            )
         }
     }
 }
@@ -124,11 +136,13 @@ private fun SubscriptionsContent(
 @Composable
 private fun SubscriptionCard(
     modifier: Modifier,
-    subscription: Subscription
+    subscription: Subscription,
+    onClick: (Subscription)-> Unit
 ) {
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         modifier = modifier
+            .clickable{ onClick(subscription) }
             .fillMaxWidth()
             .padding(12.dp),
         colors = CardDefaults.cardColors(
