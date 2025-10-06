@@ -24,18 +24,8 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun signUpWithEmailAndPassword(email: String, password: String) {
         try {
-            Log.d("AuthRepository", "Attempting to create user with email: $email")
             val result = auth.createUserWithEmailAndPassword(email.trim(), password).await()
             Log.d("AuthRepository", "User created successfully: ${result.user?.uid}")
-            if(result.user != null) {
-                val fcmToken = getFcmToken()
-                if(fcmToken != null) {
-                    sendFcmToken(fcmToken)
-                }
-                true
-            } else {
-                false
-            }
         } catch (e: Exception) {
             Log.e("AuthRepository", "Failed to create user with email $email: ${e.message}", e)
             throw e
@@ -45,15 +35,6 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun signInWithEmailAndPassword(email: String, password: String) {
         try { val result = auth.signInWithEmailAndPassword(email, password).await()
             Log.d("AuthRepository", "User sign in successfully: ${result.user?.uid}")
-            if(result.user != null) {
-                val fcmToken = getFcmToken()
-                if(fcmToken != null) {
-                    sendFcmToken(fcmToken)
-                }
-                true
-            } else {
-                false
-            }
         } catch (e: Exception) {
             throw e
         }
