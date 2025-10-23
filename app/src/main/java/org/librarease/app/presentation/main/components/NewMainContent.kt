@@ -1,26 +1,21 @@
 package org.librarease.app.presentation.main.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.WavingHand
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import org.librarease.app.R
 import org.librarease.app.domain.model.CategoryItem
 import java.util.Locale
 
@@ -38,7 +33,7 @@ fun NewMainContent(
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
-            .padding(16.dp),
+            .padding(dimensionResource(R.dimen.spacing_normal)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Personalized Welcome Header
@@ -47,13 +42,13 @@ fun NewMainContent(
             userName = userName
         )
         
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_xl)))
         
         // Category Grid
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_normal)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_normal))
         ) {
             items(categoryList) { category ->
                 CategoryCard(
@@ -63,7 +58,7 @@ fun NewMainContent(
             }
         }
         
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_xl)))
         
         // Sign in prompt if not signed in
         if (!isUserSignIn) {
@@ -88,38 +83,38 @@ fun CategoryCard(
             containerColor = MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        border = BorderStroke(1.dp, Color.LightGray),
+        border = CardDefaults.outlinedCardBorder(),
+        shape = MaterialTheme.shapes.medium,
         onClick = onClick
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(dimensionResource(R.dimen.spacing_normal)),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             Box(
                 modifier = Modifier
                     .size(60.dp)
-                    .clip(CircleShape)
+                    .clip(MaterialTheme.shapes.extraLarge)
                     .background(MaterialTheme.colorScheme.primary),
                 contentAlignment = Alignment.Center
             ){
                 Icon(
                     imageVector = category.icon,
                     contentDescription = category.title,
-                    modifier = Modifier.size(32.dp),
-                    tint = Color.White
+                    modifier = Modifier.size(dimensionResource(R.dimen.icon_size_large)),
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
             
             Text(
                 text = category.title,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center
             )
         }
@@ -140,9 +135,11 @@ fun WelcomeHeader(
                             MaterialTheme.colorScheme.primaryContainer,
                             MaterialTheme.colorScheme.secondaryContainer
                         )
-                    )
+                    ),
+                    shape = MaterialTheme.shapes.medium
                 )
-                .padding(20.dp)
+                .clip(MaterialTheme.shapes.medium)
+                .padding(dimensionResource(R.dimen.spacing_large))
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -158,25 +155,27 @@ fun WelcomeHeader(
                         
                         Text(
                             text = if (isUserSignIn && !userName.isNullOrBlank()) {
-                                "Welcome back, ${userName.replaceFirstChar { 
-                                    if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() 
-                                }}!"
+                                stringResource(
+                                    R.string.welcome_back_user,
+                                    userName.replaceFirstChar { 
+                                        if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() 
+                                    }
+                                )
                             } else if (isUserSignIn) {
-                                "Hello"
+                                stringResource(R.string.hello)
                             } else {
-                                "Welcome to Librarease"
+                                stringResource(R.string.welcome_to_librarease)
                             },
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.headlineMedium,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
 
                     Text(
                         text = if (isUserSignIn) {
-                            "What would you like to explore today?"
+                            stringResource(R.string.explore_today)
                         } else {
-                            "Your digital library companion"
+                            stringResource(R.string.digital_library_companion_subtitle)
                         },
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)

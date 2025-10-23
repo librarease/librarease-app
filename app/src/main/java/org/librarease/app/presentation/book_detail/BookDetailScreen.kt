@@ -302,7 +302,7 @@ fun BookDetailContent(bookDetail: BookDetail) {
                     )
                 }
                 OutlinedButton(
-                    onClick = { /* View Library */ },
+                    onClick = {  },
                     modifier = Modifier
                 ) {
                     Text(stringResource(R.string.view_library))

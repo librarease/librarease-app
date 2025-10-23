@@ -101,4 +101,15 @@
     <string name="already_have_account">Already have an account? </string>
     <string name="enter_full_name">Please enter your full name</string>
     <string name="accept_terms">Please accept the terms and conditions</string>
+    
+    <!-- Main Screen -->
+    <string name="welcome_back_user">Welcome back, %1$s!</string>
+    <string name="hello">Hello</string>
+    <string name="welcome_to_librarease">Welcome to Librarease</string>
+    <string name="explore_today">What would you like to explore today?</string>
+    <string name="digital_library_companion_subtitle">Your digital library companion</string>
+    <string name="books_category">Books</string>
+    <string name="libraries_category">Libraries</string>
+    <string name="subscriptions_category">Subscriptions</string>
+    <string name="borrowings_category">Borrowings</string>
 </resources>

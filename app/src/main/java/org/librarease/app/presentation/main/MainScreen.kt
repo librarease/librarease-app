@@ -18,8 +18,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.librarease.app.R
 import org.librarease.app.domain.model.CategoryItem
 import org.librarease.app.presentation.main.components.MainAppBar
 import org.librarease.app.presentation.main.components.MainBottomNavBar
@@ -42,19 +44,19 @@ fun MainScreen(
     val categoryList = listOf(
         CategoryItem(
             Icons.Default.MenuBook,
-            "Books"
+            stringResource(R.string.books_category)
         ),
         CategoryItem(
             Icons.Filled.LocationOn,
-            "Libraries"
+            stringResource(R.string.libraries_category)
         ),
         CategoryItem(
             Icons.Default.Subscriptions,
-            "Subscriptions"
+            stringResource(R.string.subscriptions_category)
         ),
         CategoryItem(
             Icons.Filled.Cached,
-            "Borrowings"
+            stringResource(R.string.borrowings_category)
         )
     )
 
@@ -90,10 +92,10 @@ fun MainScreen(
                 categoryList = categoryList,
                 onCategoryClick = { category ->
                     when (category.title) {
-                        "Books" -> navigate(Route.Books)
-                        "Libraries" -> navigate(Route.Libraries)
-                        "Subscriptions" -> navigate(Route.Subscriptions)
-                        "Borrowings" -> navigate(Route.Borrowings)
+                        context.getString(R.string.books_category) -> navigate(Route.Books)
+                        context.getString(R.string.libraries_category) -> navigate(Route.Libraries)
+                        context.getString(R.string.subscriptions_category) -> navigate(Route.Subscriptions)
+                        context.getString(R.string.borrowings_category) -> navigate(Route.Borrowings)
                     }
                 }
             )
