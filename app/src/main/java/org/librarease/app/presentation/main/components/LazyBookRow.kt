@@ -22,7 +22,8 @@ import org.librarease.app.domain.model.BookItem
 fun LazyBookRow(
     modifier: Modifier = Modifier,
     lazyRowState: LazyListState,
-    itemList: List<BookItem>
+    itemList: List<BookItem>,
+    onBookClick: (String) -> Unit = {}
 ) {
     LazyRow(
         state = lazyRowState,
@@ -47,7 +48,8 @@ fun LazyBookRow(
                     ),
                 title = bookItem.title,
                 cover = bookItem.cover,
-                author = bookItem.author
+                author = bookItem.author,
+                onClick = { onBookClick(bookItem.id) }
             )
         }
     }

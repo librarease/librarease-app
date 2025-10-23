@@ -7,22 +7,28 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.WavingHand
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.librarease.app.domain.model.CategoryItem
+import java.util.Locale
 
 @Composable
 fun NewMainContent(
     innerPadding: PaddingValues,
     isUserSignIn: Boolean,
+    userName: String?,
     onLoginClick: () -> Unit,
     onSignUpClick: () -> Unit,
     categoryList: List<CategoryItem>,
@@ -35,20 +41,10 @@ fun NewMainContent(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Header
-        Text(
-            text = "Welcome to Librarease",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-        
-        Spacer(modifier = Modifier.height(8.dp))
-        
-        Text(
-            text = "Choose what you'd like to explore",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+        // Personalized Welcome Header
+        WelcomeHeader(
+            isUserSignIn = isUserSignIn,
+            userName = userName
         )
         
         Spacer(modifier = Modifier.height(32.dp))
@@ -128,4 +124,64 @@ fun CategoryCard(
             )
         }
     }
-} 
+}
+
+@Composable
+fun WelcomeHeader(
+    isUserSignIn: Boolean,
+    userName: String?
+) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.primaryContainer,
+                            MaterialTheme.colorScheme.secondaryContainer
+                        )
+                    )
+                )
+                .padding(20.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        
+                        Text(
+                            text = if (isUserSignIn && !userName.isNullOrBlank()) {
+                                "Welcome back, ${userName.replaceFirstChar { 
+                                    if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() 
+                                }}!"
+                            } else if (isUserSignIn) {
+                                "Hello"
+                            } else {
+                                "Welcome to Librarease"
+                            },
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
+
+                    Text(
+                        text = if (isUserSignIn) {
+                            "What would you like to explore today?"
+                        } else {
+                            "Your digital library companion"
+                        },
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                    )
+                }
+            }
+        }
+}

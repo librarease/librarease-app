@@ -38,4 +38,67 @@
     <string name="user_deleted_message">User successfully deleted.</string>
 
     <string name="continue_as_guest">"Continue as Guest"</string>
+    
+    <!-- Book Detail Screen -->
+    <string name="book_details_title">Book Details</string>
+    <string name="back_button">Back</string>
+    <string name="more_options">More</string>
+    <string name="book_cover">Book Cover</string>
+    <string name="available">Available</string>
+    <string name="borrowed">Borrowed</string>
+    <string name="by_author">by %1$s</string>
+    <string name="member_since">Member since %1$s</string>
+    <string name="view_library">View Library</string>
+    <string name="times_borrowed">Times Borrowed</string>
+    <string name="days_left">Days Left</string>
+    <string name="currently_borrowed">Currently Borrowed</string>
+    <string name="previously_borrowed">Previously Borrowed</string>
+    <string name="borrowed_on">Borrowed on:</string>
+    <string name="due_date">Due date:</string>
+    <string name="status">Status:</string>
+    <string name="fine">Fine:</string>
+    <string name="active">Active</string>
+    <string name="returned">Returned</string>
+    <string name="retry">Retry</string>
+    <string name="unknown_error">Unknown error</string>
+    
+    <!-- All Books Screen -->
+    <string name="all_books_title">All Books</string>
+    <string name="search_books_hint">Search books...</string>
+    <string name="search_icon">Search Icon</string>
+    
+    <!-- Subscriptions Screen -->
+    <string name="my_subscriptions_title">My Subscriptions</string>
+    <string name="membership_icon">Membership Icon</string>
+    <string name="go_icon">Go</string>
+    <string name="error_title">Error</string>
+    <string name="no_subscriptions_title">No Subscriptions</string>
+    <string name="no_subscriptions_message">You don\'t have any active library subscriptions yet.</string>
+    <string name="no_subscriptions_hint">Visit libraries to subscribe and access their collections!</string>
+    <string name="failed_load_subscriptions">Failed to load subscriptions</string>
+    <string name="check_connection">Please check your internet connection and try again.</string>
+    
+    <!-- Library List Screen -->
+    <string name="all_libraries_title">All Libraries</string>
+    <string name="no_libraries_available">No libraries available</string>
+    <string name="check_back_later">Check back later for new libraries</string>
+    <string name="unknown_library">Unknown Library</string>
+    
+    <!-- Sign In Screen -->
+    <string name="librarease_logo">Librarease Logo</string>
+    <string name="librarease_title">Librarease</string>
+    <string name="digital_library_companion">Your Digital Library Companion</string>
+    <string name="sign_in_title">Sign In</string>
+    <string name="or_divider">OR</string>
+    <string name="no_account_text">Don\'t have an account? </string>
+    
+    <!-- Sign Up Screen -->
+    <string name="join_reading_community">Join the Reading Community</string>
+    <string name="create_account_title">Create Account</string>
+    <string name="full_name_label">Full Name</string>
+    <string name="person_icon">Person Icon</string>
+    <string name="terms_agreement">I agree to the Terms of Service and Privacy Policy</string>
+    <string name="already_have_account">Already have an account? </string>
+    <string name="enter_full_name">Please enter your full name</string>
+    <string name="accept_terms">Please accept the terms and conditions</string>
 </resources>

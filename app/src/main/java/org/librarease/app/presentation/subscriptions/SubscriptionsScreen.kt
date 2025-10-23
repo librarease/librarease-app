@@ -5,9 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.KeyboardArrowRight
@@ -16,12 +14,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import org.librarease.app.R
 import org.librarease.app.domain.model.Subscription
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,16 +36,24 @@ fun SubscriptionsScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("My Subscriptions", textAlign = TextAlign.Center)},
+                    Text(
+                        text = stringResource(R.string.my_subscriptions_title),
+                        style = MaterialTheme.typography.titleLarge,
+                        textAlign = TextAlign.Center
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = stringResource(R.string.back_button)
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         }
@@ -85,12 +92,11 @@ fun SubscriptionsScreen(
                     ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_normal))
                         ) {
                             Text(
-                                text = "Error",
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold
+                                text = stringResource(R.string.error_title),
+                                style = MaterialTheme.typography.headlineMedium
                             )
 
                             Text(
@@ -100,7 +106,7 @@ fun SubscriptionsScreen(
                             )
 
                             Button(onClick = { viewModel.fetchSubscriptions() }) {
-                                Text("Retry")
+                                Text(stringResource(R.string.retry))
                             }
                         }
                     }
@@ -118,8 +124,8 @@ private fun SubscriptionsContent(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+            .padding(dimensionResource(R.dimen.spacing_medium)),
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_medium))
     ) {
         items(subscriptions) { subscription ->
             SubscriptionCard(
@@ -140,59 +146,59 @@ private fun SubscriptionCard(
     onClick: (Subscription)-> Unit
 ) {
     Card(
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = dimensionResource(R.dimen.spacing_xs)),
         modifier = modifier
             .clickable{ onClick(subscription) }
             .fillMaxWidth()
-            .padding(12.dp),
+            .padding(dimensionResource(R.dimen.spacing_medium)),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.background
-        )
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        shape = MaterialTheme.shapes.medium
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(dimensionResource(R.dimen.spacing_normal)),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
-                        .size(50.dp)
-                        .clip(CircleShape)
-                        .background(Color(0xFFEFF8F1)),
+                        .size(dimensionResource(R.dimen.icon_size_xl))
+                        .clip(MaterialTheme.shapes.extraLarge)
+                        .background(MaterialTheme.colorScheme.primaryContainer),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Default.BookmarkBorder,
-                        contentDescription = "Membership Icon",
+                        contentDescription = stringResource(R.string.membership_icon),
                         tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(28.dp)
+                        modifier = Modifier.size(dimensionResource(R.dimen.icon_size_medium))
                     )
                 }
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_medium)))
                 Column {
                     Text(
                         text = subscription.membershipName,
                         style = MaterialTheme.typography.bodyLarge.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF0F172A)
-                        )
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = MaterialTheme.colorScheme.onSurface
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
                     Text(
                         text = subscription.libraryName,
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = Color.Gray
-                        )
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
             Icon(
                 imageVector = Icons.Default.KeyboardArrowRight,
-                contentDescription = "Go",
-                tint = Color.Gray
+                contentDescription = stringResource(R.string.go_icon),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
@@ -206,24 +212,25 @@ private fun EmptySubscriptionsContent() {
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_normal))
         ) {
             Text(
-                text = "No Subscriptions",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
+                text = stringResource(R.string.no_subscriptions_title),
+                style = MaterialTheme.typography.headlineMedium
             )
             
             Text(
-                text = "You don't have any active library subscriptions yet.",
+                text = stringResource(R.string.no_subscriptions_message),
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
             )
             
             Text(
-                text = "Visit libraries to subscribe and access their collections!",
+                text = stringResource(R.string.no_subscriptions_hint),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
             )
         }
     }
@@ -239,23 +246,23 @@ private fun ErrorContent(
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_normal))
         ) {
             Text(
-                text = "Failed to load subscriptions",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
+                text = stringResource(R.string.failed_load_subscriptions),
+                style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.error
             )
             
             Text(
-                text = "Please check your internet connection and try again.",
+                text = stringResource(R.string.check_connection),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
             )
             
             Button(onClick = onRetry) {
-                Text("Retry")
+                Text(stringResource(R.string.retry))
             }
         }
     }

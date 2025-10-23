@@ -2,6 +2,7 @@ package org.librarease.app.data.remote
 
 import okhttp3.Response
 import org.librarease.app.data.remote.request.FcmTokenRequest
+import org.librarease.app.data.remote.response.BookDetailResponse
 import org.librarease.app.data.remote.response.BookListResponse
 import org.librarease.app.data.remote.response.LibraryListResponse
 import org.librarease.app.data.remote.response.MembershipListResponse
@@ -29,6 +30,11 @@ interface LibrareaseApi {
         @Query("limit") limit: Int? = null,
         @Query("page") page: Int? = null
     ): BookListResponse
+
+    @GET("books/{id}")
+    suspend fun getBookById(
+        @Path("id") id: String
+    ): BookDetailResponse
 
     @GET("memberships")
     suspend fun getMemberships(

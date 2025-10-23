@@ -37,6 +37,7 @@ fun MainScreen(
     val context = LocalContext.current
     val activity = context as Activity
     val isUserSignIn by viewModel.authState.collectAsState()
+    val userName by viewModel.userName.collectAsState()
 
     val categoryList = listOf(
         CategoryItem(
@@ -83,6 +84,7 @@ fun MainScreen(
             "home" -> NewMainContent(
                 innerPadding = innerPadding,
                 isUserSignIn = isUserSignIn,
+                userName = userName,
                 onLoginClick = { navigateAndClear(Route.SignIn) },
                 onSignUpClick = { navigateAndClear(Route.SignUp) },
                 categoryList = categoryList,

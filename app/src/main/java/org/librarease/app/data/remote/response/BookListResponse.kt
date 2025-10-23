@@ -7,6 +7,9 @@ data class BookListResponse(
     val bookList: List<Book?>?
 ) {
     data class Book(
+        @SerializedName("id")
+        val id: String?,
+
         @SerializedName("title")
         val title: String?,
 

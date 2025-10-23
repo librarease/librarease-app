@@ -32,20 +32,20 @@ class LibraryDetailViewModel @Inject constructor(
             try {
                 println("Loading library data for ID: $libraryId")
                 
-                // Try to get library data from API
                 try {
                     val library = repository.getLibraryById(libraryId)
                     _library.value = library
                     println("Library loaded from API: ${library.name}")
                 } catch (e: Exception) {
                     println("Failed to load library from API, creating placeholder: ${e.message}")
-                    // Create a placeholder library if API fails
                     val placeholderLibrary = Library(
                         id = libraryId,
                         name = "Library $libraryId",
                         phoneNo = null,
                         email = null,
-                        logo = null
+                        logo = null,
+                        created_at = null,
+                        updated_at = null
                     )
                     _library.value = placeholderLibrary
                 }

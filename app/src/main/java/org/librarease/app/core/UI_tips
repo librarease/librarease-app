@@ -1,0 +1,117 @@
+# UI Best Practices (Jetpack Compose)
+
+## 1. Avoid Hardcoding Values
+
+* Do **not** hardcode colors, strings, or dimensions directly in composables.
+* Use resource files instead:
+
+  * Colors → `ui/theme/Color.kt` or `res/values/colors.xml`
+  * Strings → `res/values/strings.xml`
+  * Dimensions → `res/values/dimens.xml`
+
+✅ Example:
+
+```kotlin
+Modifier.padding(dimensionResource(R.dimen.padding_medium))
+Text(stringResource(R.string.welcome))
+```
+
+---
+
+## 2. Follow Material 3 Design System
+
+* Always use `MaterialTheme.colorScheme` and `MaterialTheme.typography`.
+* Prefer Material components (`Button`, `TextField`, `Card`, etc.) over custom ones when possible.
+* Use `MaterialTheme.shapes` for consistent rounding.
+
+✅ Example:
+
+```kotlin
+Text(
+  text = "Title",
+  style = MaterialTheme.typography.titleMedium,
+  color = MaterialTheme.colorScheme.onSurface
+)
+```
+
+---
+
+## 3. Use Modifiers Responsibly
+
+* Order modifiers carefully: layout first → visuals → interaction.
+* Reuse modifiers for consistent spacing (e.g., `Modifier.padding(8.dp)` → move to a constant if reused).
+* Avoid chaining too many modifiers inline; extract to a helper when it improves readability.
+
+---
+
+## 4. Make Layouts Responsive
+
+* Use `Modifier.fillMaxWidth()` or `Modifier.weight()` for adaptive layouts.
+* Avoid hardcoded widths/heights unless necessary.
+* Test on multiple screen sizes and orientations.
+
+---
+
+## 5. Use State and Recomposition Wisely
+
+* Remember: composables recompose when their state changes.
+* Keep UI state at the right level (e.g., ViewModel).
+* Use `remember` and `derivedStateOf` to prevent unnecessary recompositions.
+
+---
+
+## 6. Accessibility
+
+* Always provide `contentDescription` for images and icons.
+* Use `semantics { }` for custom composables when needed.
+* Ensure good color contrast between text and background.
+
+---
+
+## 7. Spacing and Alignment
+
+* Follow consistent spacing (e.g., 4dp grid system: 4dp, 8dp, 12dp, 16dp…).
+* Use `Arrangement.spacedBy()` and `Spacer()` instead of random dp values.
+* Prefer `Alignment.CenterVertically` and `Arrangement.Center` for clarity.
+
+---
+
+## 8. Typography Hierarchy
+
+* Use `MaterialTheme.typography` styles instead of manual font sizes.
+* Maintain consistent text weights and sizes across screens.
+
+---
+
+## 9. Theme and Dark Mode Support
+
+* Test both light and dark themes.
+* Use `MaterialTheme.colorScheme` instead of fixed colors.
+* Avoid using `Color.White` or `Color.Black` directly.
+
+---
+
+## 10. Code Readability & Reuse
+
+* Split complex UI into smaller composables.
+* Use `@Preview` for testing each component separately.
+* Keep modifiers and layout logic in composables, and business logic in ViewModel.
+
+---
+
+## 11. Testing & Debugging
+
+* Use Previews with different parameters (light/dark mode, font scale).
+* Use `Layout Inspector` and `Accessibility Scanner` for verification.
+* Profile your UI for jank or overdraw when optimizing.
+
+---
+
+### TL;DR
+
+> **Consistency + Readability + Responsiveness = Great UI**
+>
+> * Define constants in theme files
+> * Stick to Material 3 system
+> * Think in dp, not pixels
+> * Test across devices and themes

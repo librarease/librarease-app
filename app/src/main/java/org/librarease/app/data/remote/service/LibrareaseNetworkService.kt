@@ -1,5 +1,6 @@
 package org.librarease.app.data.remote.service
 
+import org.librarease.app.data.remote.response.BookDetailResponse
 import org.librarease.app.data.remote.response.BookListResponse
 import org.librarease.app.data.remote.response.LibraryListResponse
 import org.librarease.app.data.remote.response.MembershipListResponse
@@ -10,6 +11,8 @@ interface LibrareaseNetworkService {
     suspend fun getBooks(limit: Int): BookListResponse
     
     suspend fun getBooksPaginated(limit: Int, page: Int): BookListResponse
+
+    suspend fun getBookById(id: String): BookDetailResponse
 
     suspend fun getLibraries(limit: Int): LibraryListResponse
     

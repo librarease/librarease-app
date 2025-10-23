@@ -20,6 +20,12 @@ data class LibraryListResponse(
         val email: String?,
 
         @SerializedName("logo")
-        val logo: String?
+        val logo: String?,
+
+        @SerializedName("created_at")
+        val createdAt: String?,
+
+        @SerializedName("updated_at")
+        val updatedAt: String?
     )
 }

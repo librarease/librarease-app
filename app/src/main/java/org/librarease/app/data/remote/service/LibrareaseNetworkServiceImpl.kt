@@ -3,6 +3,7 @@ package org.librarease.app.data.remote.service
 import android.util.Log
 import org.librarease.app.data.remote.LibrareaseApi
 import org.librarease.app.data.remote.request.FcmTokenRequest
+import org.librarease.app.data.remote.response.BookDetailResponse
 import org.librarease.app.data.remote.response.BookListResponse
 import org.librarease.app.data.remote.response.LibraryListResponse
 import org.librarease.app.data.remote.response.MembershipListResponse
@@ -34,6 +35,10 @@ class LibrareaseNetworkServiceImpl @Inject constructor (
         }
     }
 
+    override suspend fun getBookById(id: String): BookDetailResponse {
+        return api.getBookById(id)
+    }
+
     override suspend fun getLibraries(limit: Int): LibraryListResponse {
         return try {
             api.getLibraries(limit = limit)
@@ -56,7 +61,9 @@ class LibrareaseNetworkServiceImpl @Inject constructor (
                 name = "Library $id",
                 phoneNo = null,
                 email = null,
-                logo = null
+                logo = null,
+                createdAt = null,
+                updatedAt = null
             )
         }
     }

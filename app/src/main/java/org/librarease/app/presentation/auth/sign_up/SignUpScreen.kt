@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -86,9 +87,9 @@ fun SignUpScreen(
                     .wrapContentHeight()
                     .wrapContentWidth()
                     .offset(y = (-40).dp)
-                    .padding(16.dp),
-                shape = RoundedCornerShape(16.dp),
-                elevation = CardDefaults.elevatedCardElevation(defaultElevation = 8.dp)
+                    .padding(dimensionResource(R.dimen.spacing_normal)),
+                shape = MaterialTheme.shapes.large,
+                elevation = CardDefaults.elevatedCardElevation(defaultElevation = dimensionResource(R.dimen.spacing_small))
             ) {
                 SignUpContent(
                     innerPadding = innerPadding,
@@ -105,10 +106,10 @@ fun SignUpScreen(
                     fullName = fullName,
                     onFullNameChange = viewModel::onFullNameChange,
                     onFullNameInvalid = {
-                        showToastMessage(context, "Please enter your full name")
+                        showToastMessage(context, context.getString(R.string.enter_full_name))
                     },
                     onTermsNotAccepted = {
-                        showToastMessage(context, "Please accept the terms and conditions")
+                        showToastMessage(context, context.getString(R.string.accept_terms))
                     },
                     onSignUpClick = { email, password, fullName ->
                         viewModel.onSignUpWithEmailAndPassword(email, password, fullName)

@@ -5,5 +5,7 @@ data class Library(
     val name: String?,
     val phoneNo: String?,
     val email: String?,
-    val logo: String?
+    val logo: String?,
+    val created_at: String?,
+    val updated_at: String?
 )

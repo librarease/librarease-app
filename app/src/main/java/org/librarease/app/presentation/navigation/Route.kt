@@ -24,6 +24,10 @@ sealed class Route(val route: String) {
         fun createRoute(subscriptionId: String) = "subscription_qr/${Uri.encode(subscriptionId)}"
     }
     
+    data object BookDetail: Route("book_detail/{bookId}") {
+        fun createRoute(bookId: String) = "book_detail/${Uri.encode(bookId)}"
+    }
+    
     class LibraryDetailWithId(libraryId: String) : Route("library_detail/$libraryId")
 
     override fun toString(): String = route

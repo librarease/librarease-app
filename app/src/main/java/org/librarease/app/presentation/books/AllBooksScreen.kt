@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
@@ -35,11 +34,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.librarease.app.R
@@ -50,7 +47,8 @@ import org.librarease.app.presentation.main.components.BookCard
 @Composable
 fun AllBooksScreen(
     viewModel: MainViewModel = hiltViewModel(),
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    onBookClick: (String) -> Unit = {}
 ) {
     val books by viewModel.filteredAllBooksList.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsState()
@@ -64,19 +62,24 @@ fun AllBooksScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("All Books") },
+                title = { 
+                    Text(
+                        text = stringResource(R.string.all_books_title),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Navigate back"
+                            contentDescription = stringResource(R.string.navigate_back)
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         }
@@ -91,17 +94,23 @@ fun AllBooksScreen(
                 onValueChange = { viewModel.updateSearchQuery(it) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp),
-                placeholder = { Text("Search books...") },
+                    .padding(dimensionResource(R.dimen.spacing_small)),
+                placeholder = { 
+                    Text(
+                        text = stringResource(R.string.search_books_hint),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Search,
-                        contentDescription = "Search Icon",
-                        tint = colorResource(id = R.color.primary)
+                        contentDescription = stringResource(R.string.search_icon),
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 },
-                shape = RoundedCornerShape(24.dp),
-                singleLine = true
+                shape = MaterialTheme.shapes.extraLarge,
+                singleLine = true,
+                textStyle = MaterialTheme.typography.bodyMedium
             )
 
             Box(modifier = Modifier.fillMaxSize()) {
@@ -124,9 +133,9 @@ fun AllBooksScreen(
                 LazyVerticalGrid(
                     state = gridState,
                     columns = GridCells.Adaptive(minSize = 140.dp),
-                    contentPadding = PaddingValues(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(dimensionResource(R.dimen.spacing_normal)),
+                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_normal)),
+                    verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_normal)),
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(books.size) { index ->
@@ -134,13 +143,14 @@ fun AllBooksScreen(
                         BookCard(
                             title = book.title,
                             author = book.author,
-                            cover = book.cover
+                            cover = book.cover,
+                            onClick = { onBookClick(book.id) }
                         )
                     }
                     
                     if (isLoading) {
                         item {
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
                         }
                     }
                 }
@@ -149,8 +159,8 @@ fun AllBooksScreen(
                     CircularProgressIndicator(
                         modifier = Modifier
                             .align(Alignment.Center)
-                            .padding(16.dp)
-                            .size(40.dp),
+                            .padding(dimensionResource(R.dimen.spacing_normal))
+                            .size(dimensionResource(R.dimen.icon_size_xl)),
                         color = MaterialTheme.colorScheme.primary
                     )
                 }

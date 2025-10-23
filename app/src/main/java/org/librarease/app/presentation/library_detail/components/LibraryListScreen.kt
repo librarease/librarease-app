@@ -10,10 +10,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import org.librarease.app.R
 import org.librarease.app.domain.model.Library
 import org.librarease.app.presentation.main.components.LibraryCard
 
@@ -30,16 +30,24 @@ fun LibraryListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("All Libraries") },
+                title = { 
+                    Text(
+                        text = stringResource(R.string.all_libraries_title),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = stringResource(R.string.back_button)
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         }
@@ -53,16 +61,15 @@ fun LibraryListScreen(
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                    verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
                 ) {
                     Text(
-                        text = "No libraries available",
+                        text = stringResource(R.string.no_libraries_available),
                         style = MaterialTheme.typography.headlineSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Check back later for new libraries",
+                        text = stringResource(R.string.check_back_later),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -74,15 +81,15 @@ fun LibraryListScreen(
                 modifier = modifier
                     .fillMaxSize()
                     .padding(innerPadding),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                contentPadding = PaddingValues(dimensionResource(R.dimen.spacing_normal)),
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_medium))
             ) {
                 items(
                     items = libraryList,
                     key = { library -> library.id }
                 ) { library ->
                     LibraryCard(
-                        name = library.name ?: "Unknown Library",
+                        name = library.name ?: stringResource(R.string.unknown_library),
                         logo = library.logo,
                         modifier = Modifier
                             .fillMaxWidth()

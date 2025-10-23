@@ -1,11 +1,13 @@
 package org.librarease.app.data.mapper
 
+import org.librarease.app.data.remote.response.BookDetailResponse
 import org.librarease.app.data.remote.response.BookListResponse
 import org.librarease.app.data.remote.response.LibraryListResponse
 import org.librarease.app.data.remote.response.MembershipListResponse
 import org.librarease.app.data.remote.response.SubscriptionListResponse
-import org.librarease.app.data.remote.response.SubscriptionResponse
+import org.librarease.app.domain.model.BookDetail
 import org.librarease.app.domain.model.BookItem
+import org.librarease.app.domain.model.BorrowingInfo
 import org.librarease.app.domain.model.Library
 import org.librarease.app.domain.model.Membership
 import org.librarease.app.domain.model.Subscription
@@ -18,9 +20,10 @@ object ResponseMapper {
         
         responseData?.forEach { book ->
             book?.let {
-                if(it.title != null) {
+                if(it.id != null && it.title != null) {
                     bookList.add(
                         BookItem(
+                            id = it.id,
                             title = it.title,
                             author = it.author ?: "",
                             cover = it.cover ?: ""
@@ -45,7 +48,9 @@ object ResponseMapper {
                             name = it.name,
                             phoneNo = it.phoneNo,
                             email = it.email,
-                            logo = it.logo
+                            logo = it.logo,
+                            created_at = it.createdAt,
+                            updated_at = it.updatedAt
                         )
                     )
                 }
@@ -61,7 +66,9 @@ object ResponseMapper {
             name = library.name,
             phoneNo = library.phoneNo,
             email = library.email,
-            logo = library.logo
+            logo = library.logo,
+            created_at = library.createdAt,
+            updated_at = library.updatedAt
         )
     }
     
@@ -116,5 +123,29 @@ object ResponseMapper {
         }
         
         subscriptionList
+    }
+
+    val bookDetailMapper: (BookDetailResponse) -> BookDetail = { response ->
+        val data = response.data
+        BookDetail(
+            id = data.id,
+            title = data.title,
+            author = data.author,
+            cover = data.cover.takeIf { it.isNotEmpty() },
+            code = data.code,
+            year = data.year,
+            library = libraryMapper(data.library),
+            borrowCount = data.stats?.borrow_count,
+            currentBorrowing = data.stats?.borrowing?.let { borrowing ->
+                BorrowingInfo(
+                    id = borrowing.id,
+                    borrowedAt = borrowing.borrowed_at,
+                    dueAt = borrowing.due_at,
+                    isReturned = borrowing.returning != null,
+                    returnedAt = borrowing.returning?.returned_at,
+                    fine = borrowing.returning?.fine
+                )
+            }
+        )
     }
 }

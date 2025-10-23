@@ -54,7 +54,8 @@ fun MainContent(
     searchQuery: String = "",
     onSearchQueryChange: (String) -> Unit = {},
     onSeeAllBooksClick: () -> Unit = {},
-    onLibraryClick: (Library) -> Unit = {}
+    onLibraryClick: (Library) -> Unit = {},
+    onBookClick: (String) -> Unit = {}
 ) {
     val scrollState = rememberScrollState()
     val bookRowState = rememberLazyListState()
@@ -143,7 +144,8 @@ fun MainContent(
             LazyBookRow(
                 lazyRowState = bookRowState,
                 modifier = Modifier,
-                itemList = bookList
+                itemList = bookList,
+                onBookClick = onBookClick
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(

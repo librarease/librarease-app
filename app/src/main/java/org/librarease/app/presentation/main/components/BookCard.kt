@@ -55,13 +55,13 @@ fun BookCard(
     author: String,
     cover: String? = null,
     modifier: Modifier = Modifier,
-    onClick: (BookItem) -> Unit = {}
+    onClick: () -> Unit = {}
 ) {
     var elevated by remember { mutableStateOf(false) }
 
     Card(
         modifier = modifier
-            .clickable { onClick }
+            .clickable { onClick() }
             .width(140.dp)
             .wrapContentHeight()
             .padding(4.dp)

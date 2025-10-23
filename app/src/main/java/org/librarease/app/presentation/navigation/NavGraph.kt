@@ -23,6 +23,7 @@ import org.librarease.app.presentation.auth.sign_up.SignUpScreen
 import org.librarease.app.presentation.auth.sign_up.SignUpViewModel
 import org.librarease.app.presentation.auth.verify_email.VerifyEmailScreen
 import org.librarease.app.presentation.auth.verify_email.VerifyEmailViewModel
+import org.librarease.app.presentation.book_detail.BookDetailScreen
 import org.librarease.app.presentation.books.AllBooksScreen
 import org.librarease.app.presentation.borrowings.BorrowingsPlaceholderScreen
 import org.librarease.app.presentation.libraries.LibrariesPlaceholderScreen
@@ -76,7 +77,10 @@ fun AppNavGraph(
             val viewModel: MainViewModel = hiltViewModel()
             AllBooksScreen(
                 viewModel = viewModel,
-                navigateBack = navController::navigateUp
+                navigateBack = navController::navigateUp,
+                onBookClick = { bookId ->
+                    navController.navigate(Route.BookDetail.createRoute(bookId))
+                }
             )
         }
 
@@ -121,6 +125,17 @@ fun AppNavGraph(
             val libraryId = backStackEntry.arguments?.getString("libraryId") ?: ""
             LibraryDetailScreen(
                 libraryId = libraryId,
+                navigateBack = navController::navigateUp
+            )
+        }
+
+        composable(
+            route = Route.BookDetail.route,
+            arguments = listOf(navArgument("bookId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val bookId = backStackEntry.arguments?.getString("bookId") ?: ""
+            BookDetailScreen(
+                bookId = bookId,
                 navigateBack = navController::navigateUp
             )
         }

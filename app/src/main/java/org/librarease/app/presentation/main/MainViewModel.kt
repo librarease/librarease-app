@@ -25,6 +25,9 @@ class MainViewModel @Inject constructor(
     private val _authState = MutableStateFlow(repo.currentUser != null)
     val authState: StateFlow<Boolean> = _authState.asStateFlow()
 
+    private val _userName = MutableStateFlow<String?>(null)
+    val userName: StateFlow<String?> = _userName.asStateFlow()
+
     private val _booksList = MutableStateFlow<List<BookItem>>(emptyList())
     val bookList: StateFlow<List<BookItem>> = _booksList.asStateFlow()
 
@@ -64,6 +67,11 @@ class MainViewModel @Inject constructor(
     private fun getAuthState() = viewModelScope.launch {
         repo.getAuthState().collect { isUserSignIn ->
             _authState.value = isUserSignIn
+            if (isUserSignIn) {
+                _userName.value = repo.currentUser?.displayName ?: repo.currentUser?.email?.substringBefore("@")
+            } else {
+                _userName.value = null
+            }
         }
     }
 

@@ -27,13 +27,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import org.librarease.app.R
 import org.librarease.app.common.ActionButton
 import org.librarease.app.common.ActionText
@@ -63,40 +61,37 @@ fun SignUpContent(
     Column(
         modifier = Modifier
             .wrapContentHeight()
-            .padding(24.dp),
+            .padding(dimensionResource(R.dimen.spacing_large)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
             imageVector = Icons.Filled.MenuBook,
-            contentDescription = "Librarease Logo",
+            contentDescription = stringResource(R.string.librarease_logo),
             modifier = Modifier.size(80.dp),
-            tint = colorResource(R.color.primary)
+            tint = MaterialTheme.colorScheme.primary
         )
         
         Text(
-            text = "Librarease",
-            color = colorResource(R.color.primary),
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 8.dp)
+            text = stringResource(R.string.librarease_title),
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(bottom = dimensionResource(R.dimen.spacing_small))
         )
         
         Text(
-            text = "Join the Reading Community",
+            text = stringResource(R.string.join_reading_community),
+            style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium,
-            modifier = Modifier.padding(bottom = 24.dp)
+            modifier = Modifier.padding(bottom = dimensionResource(R.dimen.spacing_large))
         )
         
         Text(
-            text = "Create Account",
-            color =  colorResource(R.color.primary),
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
+            text = stringResource(R.string.create_account_title),
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
-                .padding(bottom = 16.dp)
+                .padding(bottom = dimensionResource(R.dimen.spacing_normal))
                 .align(Alignment.CenterHorizontally)
         )
         
@@ -104,20 +99,20 @@ fun SignUpContent(
         OutlinedTextField(
             value = fullName,
             onValueChange = onFullNameChange,
-            label = { Text("Full Name") },
+            label = { Text(stringResource(R.string.full_name_label)) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Person,
-                    contentDescription = "Person Icon",
+                    contentDescription = stringResource(R.string.person_icon),
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
         )
         
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_medium)))
         
         EmailField(
             email = email,
@@ -125,14 +120,14 @@ fun SignUpContent(
             autoFocus = true
         )
         
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_medium)))
         
         PasswordField(
             password = password,
             onPasswordChange = onPasswordChange
         )
         
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_normal)))
         
         // Terms and Conditions Checkbox
         Row(
@@ -144,13 +139,13 @@ fun SignUpContent(
                 onCheckedChange = { agreeToTerms = it }
             )
             Text(
-                text = "I agree to the Terms of Service and Privacy Policy",
-                fontSize = 12.sp,
+                text = stringResource(R.string.terms_agreement),
+                style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
         
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_normal)))
         
         ActionButton(
             onActionButtonClick = {
@@ -178,7 +173,7 @@ fun SignUpContent(
             resourceId = R.string.sign_up_button
         )
         
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_large)))
         
         // Sign in text
         Row(
@@ -186,7 +181,8 @@ fun SignUpContent(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Already have an account? ",
+                text = stringResource(R.string.already_have_account),
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
             ActionText(

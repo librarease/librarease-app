@@ -3,6 +3,7 @@ package org.librarease.app.data.repository
 import android.util.Log
 import org.librarease.app.data.mapper.ResponseMapper
 import org.librarease.app.data.remote.service.LibrareaseNetworkService
+import org.librarease.app.domain.model.BookDetail
 import org.librarease.app.domain.model.BookItem
 import org.librarease.app.domain.model.Library
 import org.librarease.app.domain.model.Membership
@@ -22,6 +23,11 @@ class LibrareaseRepoImpl @Inject constructor(
     override suspend fun getBooksPaginated(limit: Int, page: Int): List<BookItem> {
         val response = networkService.getBooksPaginated(limit, page)
         return ResponseMapper.bookListMapper(response)
+    }
+
+    override suspend fun getBookById(id: String): BookDetail {
+        val response = networkService.getBookById(id)
+        return ResponseMapper.bookDetailMapper(response)
     }
 
     override suspend fun getLibraries(limit: Int): List<Library> {

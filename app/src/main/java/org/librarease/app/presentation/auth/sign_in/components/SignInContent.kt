@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MenuBook
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,11 +19,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import org.librarease.app.R
 import org.librarease.app.common.ActionButton
 import org.librarease.app.common.ActionText
@@ -49,41 +48,38 @@ fun SignInContent(
     Column(
         modifier = Modifier
             .wrapContentHeight()
-            .padding(24.dp),
+            .padding(dimensionResource(R.dimen.spacing_large)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // App Logo
         Icon(
             imageVector = Icons.Filled.MenuBook,
-            contentDescription = "Librarease Logo",
+            contentDescription = stringResource(R.string.librarease_logo),
             modifier = Modifier.size(80.dp),
-            tint = colorResource(R.color.primary)
+            tint = MaterialTheme.colorScheme.primary
         )
         
         Text(
-            text = "Librarease",
-            color = colorResource(R.color.primary),
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 8.dp)
+            text = stringResource(R.string.librarease_title),
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(bottom = dimensionResource(R.dimen.spacing_small))
         )
         
         Text(
-            text = "Your Digital Library Companion",
+            text = stringResource(R.string.digital_library_companion),
+            style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium,
-            modifier = Modifier.padding(bottom = 24.dp)
+            modifier = Modifier.padding(bottom = dimensionResource(R.dimen.spacing_large))
         )
         
         Text(
-            text = "Sign In",
-            color = colorResource(R.color.primary),
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
+            text = stringResource(R.string.sign_in_title),
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
-                .padding(bottom = 16.dp)
+                .padding(bottom = dimensionResource(R.dimen.spacing_normal))
                 .align(Alignment.CenterHorizontally)
         )
         
@@ -93,21 +89,21 @@ fun SignInContent(
             autoFocus = true
         )
         
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_medium)))
         
         PasswordField(
             password = password,
             onPasswordChange = onPasswordChange
         )
         
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
         
         ActionText(
             onActionTextClick = onForgotPasswordClick,
             resourceId = R.string.forgot_password,
             modifier = Modifier
                 .align(Alignment.End)
-                .padding(end = 4.dp, bottom = 16.dp)
+                .padding(end = dimensionResource(R.dimen.spacing_xs), bottom = dimensionResource(R.dimen.spacing_normal))
         )
         
         ActionButton(
@@ -128,36 +124,35 @@ fun SignInContent(
             resourceId = R.string.sign_in_button
         )
         
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_large)))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Divider(
+            HorizontalDivider(
                 modifier = Modifier.weight(1f),
-                thickness = 1.dp,
                 color = MaterialTheme.colorScheme.outlineVariant
             )
             Text(
-                text = "OR",
-                modifier = Modifier.padding(horizontal = 16.dp),
+                text = stringResource(R.string.or_divider),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.spacing_normal)),
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Divider(
+            HorizontalDivider(
                 modifier = Modifier.weight(1f),
-                thickness = 1.dp,
                 color = MaterialTheme.colorScheme.outlineVariant
             )
         }
         
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_large)))
 
         ActionText(
             onActionTextClick = continueAsGuestClick,
             resourceId = R.string.continue_as_guest,
             modifier = Modifier
-                .padding(bottom = 24.dp)
+                .padding(bottom = dimensionResource(R.dimen.spacing_large))
                 .align(Alignment.CenterHorizontally),
         )
         
@@ -166,7 +161,8 @@ fun SignInContent(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Don't have an account? ",
+                text = stringResource(R.string.no_account_text),
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
             ActionText(
