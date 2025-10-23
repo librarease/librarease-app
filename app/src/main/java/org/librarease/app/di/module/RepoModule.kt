@@ -10,6 +10,8 @@ import dagger.hilt.android.scopes.ViewModelScoped
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.librarease.app.data.local.dao.BookDao
+import org.librarease.app.data.local.dao.BookDetailDao
 import org.librarease.app.data.remote.LibrareaseApi
 import org.librarease.app.data.remote.service.LibrareaseNetworkService
 import org.librarease.app.data.remote.service.LibrareaseNetworkServiceImpl
@@ -81,6 +83,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideLibrareaseRepository(
-        networkService: LibrareaseNetworkService
-    ): LibrareaseRepository = LibrareaseRepoImpl(networkService)
+        networkService: LibrareaseNetworkService,
+        bookDao: BookDao,
+        bookDetailDao: BookDetailDao
+    ): LibrareaseRepository = LibrareaseRepoImpl(networkService, bookDao, bookDetailDao)
+
+
 }

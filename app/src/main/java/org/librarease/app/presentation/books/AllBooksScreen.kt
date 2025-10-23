@@ -4,10 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -28,7 +26,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -40,6 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.librarease.app.R
+import org.librarease.app.presentation.books.components.EmptyBooksContent
+import org.librarease.app.presentation.books.components.ErrorContent
 import org.librarease.app.presentation.main.MainViewModel
 import org.librarease.app.presentation.main.components.BookCard
 
@@ -50,12 +49,11 @@ fun AllBooksScreen(
     navigateBack: () -> Unit,
     onBookClick: (String) -> Unit = {}
 ) {
-    val books by viewModel.filteredAllBooksList.collectAsStateWithLifecycle()
-    val searchQuery by viewModel.searchQuery.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
-    val hasMoreBooks by viewModel.hasMoreBooks.collectAsState()
+    // Observe single immutable UI state (following data flow best practices)
+    val uiState by viewModel.booksUiState.collectAsStateWithLifecycle()
     
-    LaunchedEffect(key1 = Unit) {
+    // Load initial books on first composition
+    LaunchedEffect(Unit) {
         viewModel.loadInitialBooks()
     }
 
@@ -90,7 +88,7 @@ fun AllBooksScreen(
                 .padding(innerPadding)
         ) {
             OutlinedTextField(
-                value = searchQuery,
+                value = uiState.searchQuery,
                 onValueChange = { viewModel.updateSearchQuery(it) },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -114,55 +112,88 @@ fun AllBooksScreen(
             )
 
             Box(modifier = Modifier.fillMaxSize()) {
-                val gridState = rememberLazyGridState()
-                
-                val shouldLoadMore = remember {
-                    derivedStateOf {
-                        val lastVisibleItem = gridState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-                        val totalItems = books.size
-                        lastVisibleItem >= totalItems - 5 && hasMoreBooks && !isLoading
-                    }
-                }
-                
-                LaunchedEffect(shouldLoadMore.value) {
-                    if (shouldLoadMore.value) {
-                        viewModel.loadMoreBooks()
-                    }
-                }
-                
-                LazyVerticalGrid(
-                    state = gridState,
-                    columns = GridCells.Adaptive(minSize = 140.dp),
-                    contentPadding = PaddingValues(dimensionResource(R.dimen.spacing_normal)),
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_normal)),
-                    verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_normal)),
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    items(books.size) { index ->
-                        val book = books[index]
-                        BookCard(
-                            title = book.title,
-                            author = book.author,
-                            cover = book.cover,
-                            onClick = { onBookClick(book.id) }
+                when {
+                    // Error State
+                    uiState.error != null -> {
+                        ErrorContent(
+                            error = uiState.error,
+                            onRetry = { 
+                                viewModel.clearBooksError()
+                                viewModel.loadInitialBooks()
+                            },
+                            modifier = Modifier.align(Alignment.Center)
                         )
                     }
-                    
-                    if (isLoading) {
-                        item {
-                            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
+                    // Empty State
+                    uiState.isEmpty -> {
+                        EmptyBooksContent(
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                    // Success State with Books
+                    else -> {
+                        val gridState = rememberLazyGridState()
+                        
+                        // Pagination trigger
+                        val shouldLoadMore = remember {
+                            derivedStateOf {
+                                val lastVisibleItem = gridState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+                                val totalItems = uiState.books.size
+                                lastVisibleItem >= totalItems - 5 && uiState.hasMoreBooks && !uiState.isLoadingMore
+                            }
+                        }
+                        
+                        LaunchedEffect(shouldLoadMore.value) {
+                            if (shouldLoadMore.value) {
+                                viewModel.loadMoreBooks()
+                            }
+                        }
+                        
+                        LazyVerticalGrid(
+                            state = gridState,
+                            columns = GridCells.Adaptive(minSize = 140.dp),
+                            contentPadding = PaddingValues(dimensionResource(R.dimen.spacing_normal)),
+                            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_normal)),
+                            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_normal)),
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            items(uiState.books.size) { index ->
+                                val book = uiState.books[index]
+                                BookCard(
+                                    title = book.title,
+                                    author = book.author,
+                                    cover = book.cover,
+                                    onClick = { onBookClick(book.id) }
+                                )
+                            }
+
+                            if (uiState.isLoadingMore) {
+                                item {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(dimensionResource(R.dimen.spacing_normal)),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        CircularProgressIndicator(
+                                            modifier = Modifier.size(dimensionResource(R.dimen.icon_size_large)),
+                                            color = MaterialTheme.colorScheme.primary
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // Initial loading indicator (centered)
+                        if (uiState.isInitialLoad) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .align(Alignment.Center)
+                                    .size(dimensionResource(R.dimen.icon_size_xl)),
+                                color = MaterialTheme.colorScheme.primary
+                            )
                         }
                     }
-                }
-                
-                if (isLoading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(dimensionResource(R.dimen.spacing_normal))
-                            .size(dimensionResource(R.dimen.icon_size_xl)),
-                        color = MaterialTheme.colorScheme.primary
-                    )
                 }
             }
         }

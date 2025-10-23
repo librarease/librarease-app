@@ -1,0 +1,76 @@
+1. Use a Dedicated Data Layer
+
+Keep network logic isolated in a Repository or DataSource class.
+
+Don’t make API calls directly from ViewModel or Composables.
+
+2. Use Retrofit with OkHttp
+
+Retrofit is the standard library for REST APIs in Android.
+
+OkHttp handles connections, timeouts, and logging.
+
+3. Use Dependency Injection (Hilt / Koin)
+
+Inject your Retrofit, OkHttpClient, and Repository instances.
+
+This makes testing easier and prevents tight coupling.
+
+4. Handle Network Errors Gracefully
+
+Wrap API responses in a sealed class to represent success, error, and loading.
+
+5. Use Coroutines for Asynchronous Calls
+
+Avoid enqueue() callbacks — use suspend functions.
+
+ViewModel should launch network calls inside viewModelScope.launch.
+
+6. Use DTOs and Mappers
+
+Don’t expose raw API models to the UI.
+
+Create DTOs (Data Transfer Objects) and map them to your domain models.
+
+7. Add Interceptors for Logging and Headers
+
+Use HttpLoggingInterceptor for debugging.
+
+Add common headers (like authorization tokens) with custom interceptors.
+
+8. Avoid Hardcoding URLs and Keys
+
+Store BASE_URL and API keys in local.properties or BuildConfig.
+Never commit API keys to GitHub.
+
+9. Implement Caching
+
+Use OkHttp caching or Room for offline support.
+
+Example for simple caching:
+
+10. Secure Network Communication
+
+Always use HTTPS.
+
+Enable SSL pinning if your app handles sensitive data.
+
+Avoid exposing sensitive headers or logs in production builds.
+
+11. Timeouts and Retry Policy
+
+Configure timeouts properly to prevent freezing.
+
+12. Handle Pagination and Large Data
+
+Use query parameters for pagination.
+
+Show loading indicators at the bottom (in Compose: LazyColumn with LazyPagingItems).
+
+13. Test APIs with MockWebServer
+
+Use MockWebServer for unit testing API responses without hitting real servers.
+
+14. Use Paging3 for Efficient Lists
+
+Combine network + Room with Paging3 to load data smoothly and efficiently.

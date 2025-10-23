@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.firebase.database.ktx)
     implementation(libs.androidx.datastore.core.android)
     implementation(libs.firebase.messaging.ktx)
+    implementation(libs.androidx.room.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -117,6 +118,11 @@ dependencies {
 
     implementation(libs.work.runtime.ktx)
     implementation(libs.hilt.work)
+
+    // Room Database
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
 
     ksp(libs.hilt.compiler)
     ksp(libs.hilt.work.compiler)

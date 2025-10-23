@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import org.librarease.app.domain.model.BookItem
 import org.librarease.app.domain.model.Library
 import org.librarease.app.domain.repository.LibrareaseRepository
+import org.librarease.app.presentation.books.BooksUiState
 import javax.inject.Inject
 
 
@@ -56,6 +57,10 @@ class MainViewModel @Inject constructor(
     private val _filteredAllBooksList = MutableStateFlow<List<BookItem>>(emptyList())
     val filteredAllBooksList: StateFlow<List<BookItem>> = _filteredAllBooksList.asStateFlow()
 
+    // Immutable UI State for All Books Screen (following data flow best practices)
+    private val _booksUiState = MutableStateFlow(BooksUiState())
+    val booksUiState: StateFlow<BooksUiState> = _booksUiState.asStateFlow()
+
     private val PAGE_SIZE = 20
 
     init {
@@ -88,46 +93,82 @@ class MainViewModel @Inject constructor(
     }
 
     fun loadInitialBooks() {
-        if (_allBooksList.value.isEmpty()) {
+        if (_booksUiState.value.books.isEmpty() && !_booksUiState.value.isLoading) {
             loadMoreBooks(true)
         }
     }
 
     fun loadMoreBooks(isFirstLoad: Boolean = false) {
-        if (_isLoading.value || (!_hasMoreBooks.value && !isFirstLoad)) return
+        val currentState = _booksUiState.value
+        if (currentState.isLoading || (!currentState.hasMoreBooks && !isFirstLoad)) return
 
         viewModelScope.launch {
-            _isLoading.value = true
+            // Only show loading if there's no cached data
+            if (currentState.books.isEmpty()) {
+                _booksUiState.update { 
+                    it.copy(
+                        isLoading = isFirstLoad,
+                        isLoadingMore = !isFirstLoad,
+                        error = null
+                    )
+                }
+            }
+            
             try {
-                val page = if (isFirstLoad) 1 else _currentPage.value
+                val page = if (isFirstLoad) 1 else currentState.currentPage
                 val newBooks = librareaseRepo.getBooksPaginated(PAGE_SIZE, page)
 
-                if (newBooks.isEmpty()) {
-                    _hasMoreBooks.value = false
-                } else {
-                    if (isFirstLoad) {
-                        _allBooksList.value = newBooks
-                        _filteredAllBooksList.value = newBooks
-                        _currentPage.value = 2 // Next page to load
+                _booksUiState.update { state ->
+                    if (newBooks.isEmpty()) {
+                        state.copy(
+                            isLoading = false,
+                            isLoadingMore = false,
+                            hasMoreBooks = false
+                        )
                     } else {
-                        val currentBooks = _allBooksList.value.toMutableList()
-                        currentBooks.addAll(newBooks)
-                        _allBooksList.value = currentBooks
-
-                        // Apply current search filter to the new combined list
-                        filterAllBooks(_searchQuery.value)
-
-                        _currentPage.value = _currentPage.value + 1
-                    }
-
-                    // If we received fewer items than the page size, there are no more items
-                    if (newBooks.size < PAGE_SIZE) {
-                        _hasMoreBooks.value = false
+                        val updatedBooks = if (isFirstLoad) {
+                            newBooks
+                        } else {
+                            state.books + newBooks
+                        }
+                        
+                        // Apply search filter
+                        val filteredBooks = if (state.searchQuery.isBlank()) {
+                            updatedBooks
+                        } else {
+                            val query = state.searchQuery.lowercase()
+                            updatedBooks.filter { book ->
+                                book.title.lowercase().contains(query) ||
+                                book.author.lowercase().contains(query)
+                            }
+                        }
+                        
+                        state.copy(
+                            books = filteredBooks,
+                            isLoading = false,
+                            isLoadingMore = false,
+                            hasMoreBooks = newBooks.size >= PAGE_SIZE,
+                            currentPage = if (isFirstLoad) 2 else state.currentPage + 1
+                        )
                     }
                 }
+                
+                // Keep legacy state in sync for other screens
+                _allBooksList.value = _booksUiState.value.books
+                _filteredAllBooksList.value = _booksUiState.value.books
+                _isLoading.value = false
+                _hasMoreBooks.value = _booksUiState.value.hasMoreBooks
+                _currentPage.value = _booksUiState.value.currentPage
+                
             } catch (e: Exception) {
-                e.printStackTrace()
-            } finally {
+                Log.e("MainViewModel", "Error loading books", e)
+                _booksUiState.update { 
+                    it.copy(
+                        isLoading = false,
+                        isLoadingMore = false,
+                        error = e.message ?: "Unknown error occurred"
+                    )
+                }
                 _isLoading.value = false
             }
         }
@@ -155,7 +196,27 @@ class MainViewModel @Inject constructor(
     fun updateSearchQuery(query: String) {
         _searchQuery.value = query
         filterBooks(query)
-        filterAllBooks(query)
+        
+        // Update books UI state with search query
+        _booksUiState.update { state ->
+            val allBooks = _allBooksList.value
+            val filteredBooks = if (query.isBlank()) {
+                allBooks
+            } else {
+                val lowercaseQuery = query.lowercase()
+                allBooks.filter { book ->
+                    book.title.lowercase().contains(lowercaseQuery) ||
+                    book.author.lowercase().contains(lowercaseQuery)
+                }
+            }
+            state.copy(
+                searchQuery = query,
+                books = filteredBooks
+            )
+        }
+        
+        // Keep legacy filtered list in sync
+        _filteredAllBooksList.value = _booksUiState.value.books
     }
 
     private fun filterBooks(query: String) {
@@ -182,6 +243,10 @@ class MainViewModel @Inject constructor(
             book.title.lowercase().contains(lowercaseQuery) ||
                     book.author.lowercase().contains(lowercaseQuery)
         }
+    }
+    
+    fun clearBooksError() {
+        _booksUiState.update { it.copy(error = null) }
     }
 }
 

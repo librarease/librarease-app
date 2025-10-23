@@ -112,4 +112,10 @@
     <string name="libraries_category">Libraries</string>
     <string name="subscriptions_category">Subscriptions</string>
     <string name="borrowings_category">Borrowings</string>
+    
+    <!-- All Books Screen - Error & Empty States -->
+    <string name="no_books_found">No books found</string>
+    <string name="no_books_message">Try adjusting your search or check back later</string>
+    <string name="error_loading_books">Failed to load books</string>
+    <string name="network_error_message">Please check your internet connection and try again</string>
 </resources>

@@ -7,7 +7,7 @@ data class BorrowingResponse(
     val created_at: String,
     val due_at: String,
     val id: String,
-    val returning: ReturningResponse,
+    val returning: ReturningResponse?,
     val staff: Any,
     val staff_id: String,
     val subscription: Any,

@@ -18,18 +18,20 @@ object ResponseMapper {
         val responseData = response.bookList
         val bookList = ArrayList<BookItem>()
         
-        responseData?.forEach { book ->
-            book?.let {
-                if(it.id != null && it.title != null) {
-                    bookList.add(
-                        BookItem(
-                            id = it.id,
-                            title = it.title,
-                            author = it.author ?: "",
-                            cover = it.cover ?: ""
-                        )
+        responseData?.forEach { data ->
+            data?.let {
+                bookList.add(
+                    BookItem(
+                        id = it.id ?: "",
+                        title = it.title ?: "",
+                        author = it.author ?: "",
+                        cover = it.cover ?: "",
+                        code = it.code ?: "",
+                        year = it.year ?: 0,
+                        libraryId = it.library_id ?: "",
+                        libraryName = it.library.name
                     )
-                }
+                )
             }
         }
         bookList
@@ -128,12 +130,12 @@ object ResponseMapper {
     val bookDetailMapper: (BookDetailResponse) -> BookDetail = { response ->
         val data = response.data
         BookDetail(
-            id = data.id,
-            title = data.title,
-            author = data.author,
-            cover = data.cover.takeIf { it.isNotEmpty() },
-            code = data.code,
-            year = data.year,
+            id = data.id ?: "",
+            title = data.title ?: "",
+            author = data.author ?: "",
+            cover = data.cover.takeIf { it?.isNotEmpty() == true },
+            code = data.code ?: "",
+            year = data.year ?: 0,
             library = libraryMapper(data.library),
             borrowCount = data.stats?.borrow_count,
             currentBorrowing = data.stats?.borrowing?.let { borrowing ->

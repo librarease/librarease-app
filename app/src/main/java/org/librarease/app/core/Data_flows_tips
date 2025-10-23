@@ -1,0 +1,168 @@
+# Data Flow Best Practices (Android + Jetpack Compose)
+
+## 1. Unidirectional Data Flow (UDF)
+
+* Keep data flowing **in one direction**:
+  `UI → ViewModel → Repository → Data Source`
+* UI **observes** state from the ViewModel, not the other way around.
+* All user events should go **downward** (triggered from UI → ViewModel).
+
+✅ Example Flow:
+
+```
+User Action → ViewModel (updates state) → Repository (fetches data) → UI (observes state)
+```
+
+---
+
+## 2. Use Immutable UI State
+
+* Represent your screen state as a **data class**.
+* Expose it as a `StateFlow` or `LiveData`.
+* The UI should render based only on this immutable state.
+
+✅ Example:
+
+```kotlin
+data class BookDetailUiState(
+    val isLoading: Boolean = false,
+    val book: Book? = null,
+    val error: String? = null
+)
+
+val uiState: StateFlow<BookDetailUiState> = _uiState.asStateFlow()
+```
+
+---
+
+## 3. Use StateFlow or LiveData for UI
+
+* `StateFlow` (preferred) → modern, supports coroutines.
+* `LiveData` → legacy but still fine for XML-based UI.
+* Use `collectAsState()` in Compose to observe.
+
+✅ Example:
+
+```kotlin
+val uiState by viewModel.uiState.collectAsState()
+```
+
+---
+
+## 4. Use Repository Pattern
+
+* The Repository handles **data sources** (network, cache, DB).
+* The ViewModel never talks directly to Retrofit or Room.
+
+✅ Example:
+
+```
+ViewModel → Repository → Retrofit/Room
+```
+
+---
+
+## 5. Handle Loading and Errors Gracefully
+
+* Always represent loading/error states explicitly.
+* Avoid using `null` for state; use a sealed class or wrapper.
+
+✅ Example:
+
+```kotlin
+sealed class Resource<T> {
+    data class Success<T>(val data: T): Resource<T>()
+    data class Error<T>(val message: String): Resource<T>()
+    data class Loading<T>(val nothing: Nothing? = null): Resource<T>()
+}
+```
+
+---
+
+## 6. Use Coroutines and Flow Properly
+
+* Use `viewModelScope.launch` for async operations.
+* Switch context to IO for heavy work.
+* Convert cold flows to state using `.stateIn()` or `.collectAsState()`.
+
+✅ Example:
+
+```kotlin
+viewModelScope.launch {
+    repository.getBooks()
+        .onStart { _uiState.update { it.copy(isLoading = true) } }
+        .catch { e -> _uiState.update { it.copy(error = e.message) } }
+        .collect { books -> _uiState.update { it.copy(bookList = books, isLoading = false) } }
+}
+```
+
+---
+
+## 7. Don’t Expose Mutable Objects to UI
+
+* Use `private val _uiState = MutableStateFlow()` internally.
+* Expose only `val uiState: StateFlow`.
+
+✅ Example:
+
+```kotlin
+private val _uiState = MutableStateFlow(BookDetailUiState())
+val uiState: StateFlow<BookDetailUiState> = _uiState
+```
+
+---
+
+## 8. Use Events for One-Time Actions
+
+For navigation, snackbars, etc., use **SharedFlow** or `Channel`.
+
+✅ Example:
+
+```kotlin
+private val _eventFlow = MutableSharedFlow<UiEvent>()
+val eventFlow = _eventFlow.asSharedFlow()
+
+sealed class UiEvent {
+    data class ShowToast(val message: String): UiEvent()
+    object NavigateBack: UiEvent()
+}
+```
+
+---
+
+## 9. Test Each Layer Independently
+
+* ViewModel tests → mock repository.
+* Repository tests → mock API or DB.
+* UI tests → fake ViewModel data.
+
+---
+
+## 10. Keep Logic Out of Composables
+
+* Composables should be **pure** and only reflect `uiState`.
+* All logic and data fetching go inside the ViewModel or Repository.
+
+✅ Wrong:
+
+```kotlin
+val books = api.getBooks() // ❌ don’t do this inside composable
+```
+
+✅ Correct:
+
+```kotlin
+val books by viewModel.uiState.collectAsState() // ✅ ViewModel handles it
+```
+
+---
+
+## TL;DR
+
+> **Flow, don’t fight it.**
+>
+> * Keep data moving one way
+> * Use immutable UI state
+> * Handle loading/errors explicitly
+> * Separate logic by layer (UI / ViewModel / Repository)
+> * Keep composables pure
