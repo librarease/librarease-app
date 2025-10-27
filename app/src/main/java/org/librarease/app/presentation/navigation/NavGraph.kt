@@ -2,6 +2,7 @@ package org.librarease.app.presentation.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -87,6 +88,11 @@ fun AppNavGraph(
         composable(Route.Libraries.route) {
             val viewModel: MainViewModel = hiltViewModel()
             val libraryList by viewModel.libraryList.collectAsState()
+            
+            LaunchedEffect(Unit) {
+                viewModel.loadLibraries()
+            }
+            
             LibraryListScreen(
                 libraryList = libraryList,
                 onLibraryClick = { library ->

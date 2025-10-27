@@ -26,7 +26,14 @@ class BookDetailViewModel @Inject constructor(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
     
+    private var currentBookId: String? = null
+    
     fun loadBookDetail(bookId: String) {
+        if (currentBookId == bookId && _bookDetail.value != null) {
+            return
+        }
+        
+        currentBookId = bookId
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null

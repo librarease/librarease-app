@@ -8,13 +8,13 @@ import org.librarease.app.data.remote.response.SubscriptionListResponse
 import org.librarease.app.data.remote.response.SubscriptionResponse
 
 interface LibrareaseNetworkService {
-    suspend fun getBooks(limit: Int): BookListResponse
+    suspend fun getBooks(limit: Int, search: String? = null): BookListResponse
     
-    suspend fun getBooksPaginated(limit: Int, page: Int): BookListResponse
+    suspend fun getBooksPaginated(limit: Int, page: Int, search: String? = null): BookListResponse
 
     suspend fun getBookById(id: String): BookDetailResponse
 
-    suspend fun getLibraries(limit: Int): LibraryListResponse
+    suspend fun getLibraries(page: Int? = null): LibraryListResponse
     
     suspend fun getLibraryById(id: String): LibraryListResponse.Library
     

@@ -17,18 +17,18 @@ class LibrareaseNetworkServiceImpl @Inject constructor (
     private val api: LibrareaseApi,
     private val tokenProvider: FirebaseTokenProvider
 ): LibrareaseNetworkService {
-    override suspend fun getBooks(limit: Int): BookListResponse {
+    override suspend fun getBooks(limit: Int, search: String?): BookListResponse {
         return try {
-            api.getBooks(limit = limit)
+            api.getBooks(limit = limit, search = search)
         } catch (e: Exception) {
             e.printStackTrace()
             BookListResponse(emptyList())
         }
     }
     
-    override suspend fun getBooksPaginated(limit: Int, page: Int): BookListResponse {
+    override suspend fun getBooksPaginated(limit: Int, page: Int, search: String?): BookListResponse {
         return try {
-            api.getBooks(limit = limit, page = page)
+            api.getBooks(limit = limit, page = page, search = search)
         } catch (e: Exception) {
             e.printStackTrace()
             BookListResponse(emptyList())
@@ -39,9 +39,9 @@ class LibrareaseNetworkServiceImpl @Inject constructor (
         return api.getBookById(id)
     }
 
-    override suspend fun getLibraries(limit: Int): LibraryListResponse {
+    override suspend fun getLibraries(page: Int?): LibraryListResponse {
         return try {
-            api.getLibraries(limit = limit)
+            api.getLibraries(page = page)
         } catch (e: Exception) {
             e.printStackTrace()
             LibraryListResponse(emptyList())
@@ -49,23 +49,7 @@ class LibrareaseNetworkServiceImpl @Inject constructor (
     }
     
     override suspend fun getLibraryById(id: String): LibraryListResponse.Library {
-        return try {
-            Log.d("##getLibraryById", "success block entered")
-            api.getLibraryById(id)
-        } catch (e: Exception) {
-            Log.d("##getLibraryById", "error block entered")
-            e.printStackTrace()
-            // Return a placeholder library instead of throwing
-            LibraryListResponse.Library(
-                id = id,
-                name = "Library $id",
-                phoneNo = null,
-                email = null,
-                logo = null,
-                createdAt = null,
-                updatedAt = null
-            )
-        }
+        return api.getLibraryById(id)
     }
     
     override suspend fun getMemberships(libraryId: String): MembershipListResponse {

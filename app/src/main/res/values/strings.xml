@@ -63,7 +63,7 @@
     <string name="unknown_error">Unknown error</string>
     
     <!-- All Books Screen -->
-    <string name="all_books_title">All Books</string>
+    <string name="all_books_title">Books</string>
     <string name="search_books_hint">Search books...</string>
     <string name="search_icon">Search Icon</string>
     
@@ -79,7 +79,7 @@
     <string name="check_connection">Please check your internet connection and try again.</string>
     
     <!-- Library List Screen -->
-    <string name="all_libraries_title">All Libraries</string>
+    <string name="all_libraries_title">Libraries</string>
     <string name="no_libraries_available">No libraries available</string>
     <string name="check_back_later">Check back later for new libraries</string>
     <string name="unknown_library">Unknown Library</string>

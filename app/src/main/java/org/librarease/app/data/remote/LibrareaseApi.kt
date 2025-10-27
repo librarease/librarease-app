@@ -16,7 +16,6 @@ import retrofit2.http.Query
 interface LibrareaseApi {
     @GET("libraries")
     suspend fun getLibraries(
-        @Query("limit") limit: Int? = null,
         @Query("page") page: Int? = null
     ): LibraryListResponse
 
@@ -28,7 +27,8 @@ interface LibrareaseApi {
     @GET("books")
     suspend fun getBooks(
         @Query("limit") limit: Int? = null,
-        @Query("page") page: Int? = null
+        @Query("page") page: Int? = null,
+        @Query("search") search: String? = null
     ): BookListResponse
 
     @GET("books/{id}")

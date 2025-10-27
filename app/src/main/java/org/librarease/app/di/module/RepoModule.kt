@@ -12,6 +12,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.librarease.app.data.local.dao.BookDao
 import org.librarease.app.data.local.dao.BookDetailDao
+import org.librarease.app.data.local.dao.LibraryDao
 import org.librarease.app.data.remote.LibrareaseApi
 import org.librarease.app.data.remote.service.LibrareaseNetworkService
 import org.librarease.app.data.remote.service.LibrareaseNetworkServiceImpl
@@ -85,8 +86,9 @@ object AppModule {
     fun provideLibrareaseRepository(
         networkService: LibrareaseNetworkService,
         bookDao: BookDao,
-        bookDetailDao: BookDetailDao
-    ): LibrareaseRepository = LibrareaseRepoImpl(networkService, bookDao, bookDetailDao)
+        bookDetailDao: BookDetailDao,
+        libraryDao: LibraryDao
+    ): LibrareaseRepository = LibrareaseRepoImpl(networkService, bookDao, bookDetailDao, libraryDao)
 
 
 }

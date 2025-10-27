@@ -10,6 +10,7 @@ import dagger.hilt.components.SingletonComponent
 import org.librarease.app.data.database.LibrareaseDatabase
 import org.librarease.app.data.local.dao.BookDao
 import org.librarease.app.data.local.dao.BookDetailDao
+import org.librarease.app.data.local.dao.LibraryDao
 import javax.inject.Singleton
 
 @Module
@@ -40,5 +41,11 @@ object DatabaseModule {
     @Singleton
     fun provideBookDetailDao(database: LibrareaseDatabase): BookDetailDao {
         return database.bookDetailDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideLibraryDao(database: LibrareaseDatabase): LibraryDao {
+        return database.libraryDao()
     }
 }

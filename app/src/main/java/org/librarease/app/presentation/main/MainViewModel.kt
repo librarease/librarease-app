@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import org.librarease.app.core.Resource
 import org.librarease.app.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -50,6 +52,10 @@ class MainViewModel @Inject constructor(
 
     private val _currentPage = MutableStateFlow(1)
     val currentPage: StateFlow<Int> = _currentPage.asStateFlow()
+    
+    // Search debounce job
+    private var searchJob: Job? = null
+    private val SEARCH_DEBOUNCE_DELAY = 1000L //1 seconds like Chrome
 
     private val _allBooksList = MutableStateFlow<List<BookItem>>(emptyList())
     val allBooksList: StateFlow<List<BookItem>> = _allBooksList.asStateFlow()
@@ -57,7 +63,6 @@ class MainViewModel @Inject constructor(
     private val _filteredAllBooksList = MutableStateFlow<List<BookItem>>(emptyList())
     val filteredAllBooksList: StateFlow<List<BookItem>> = _filteredAllBooksList.asStateFlow()
 
-    // Immutable UI State for All Books Screen (following data flow best practices)
     private val _booksUiState = MutableStateFlow(BooksUiState())
     val booksUiState: StateFlow<BooksUiState> = _booksUiState.asStateFlow()
 
@@ -65,8 +70,6 @@ class MainViewModel @Inject constructor(
 
     init {
         getAuthState()
-        getBookList(20)
-        getLibraryList(5)
     }
 
     private fun getAuthState() = viewModelScope.launch {
@@ -80,7 +83,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getBookList(limit: Int) {
+    private fun getBookList(limit: Int) {
         try {
             viewModelScope.launch {
                 val books = librareaseRepo.getBooks(limit)
@@ -116,7 +119,8 @@ class MainViewModel @Inject constructor(
             
             try {
                 val page = if (isFirstLoad) 1 else currentState.currentPage
-                val newBooks = librareaseRepo.getBooksPaginated(PAGE_SIZE, page)
+                val searchQuery = if (currentState.searchQuery.isBlank()) null else currentState.searchQuery
+                val newBooks = librareaseRepo.getBooksPaginated(PAGE_SIZE, page, searchQuery)
 
                 _booksUiState.update { state ->
                     if (newBooks.isEmpty()) {
@@ -132,19 +136,8 @@ class MainViewModel @Inject constructor(
                             state.books + newBooks
                         }
                         
-                        // Apply search filter
-                        val filteredBooks = if (state.searchQuery.isBlank()) {
-                            updatedBooks
-                        } else {
-                            val query = state.searchQuery.lowercase()
-                            updatedBooks.filter { book ->
-                                book.title.lowercase().contains(query) ||
-                                book.author.lowercase().contains(query)
-                            }
-                        }
-                        
                         state.copy(
-                            books = filteredBooks,
+                            books = updatedBooks,
                             isLoading = false,
                             isLoadingMore = false,
                             hasMoreBooks = newBooks.size >= PAGE_SIZE,
@@ -152,8 +145,7 @@ class MainViewModel @Inject constructor(
                         )
                     }
                 }
-                
-                // Keep legacy state in sync for other screens
+
                 _allBooksList.value = _booksUiState.value.books
                 _filteredAllBooksList.value = _booksUiState.value.books
                 _isLoading.value = false
@@ -174,74 +166,71 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getLibraryList(limit: Int) {
-        try {
+    fun loadLibraries() {
+        if (_libraryList.value.isEmpty()) {
             viewModelScope.launch {
-                println("Loading libraries with limit: $limit")
-                val libraries = librareaseRepo.getLibraries(limit)
-                println("Loaded ${libraries.size} libraries")
-                libraries.forEach { library ->
-                    println("Library: ${library.name} (ID: ${library.id})")
+                try {
+                    val libraries = librareaseRepo.getLibraries(null)
+                    _libraryList.value = libraries
+                } catch (e: Exception) {
+                    Log.e("MainViewModel", "Error loading libraries", e)
                 }
-                _libraryList.value = libraries
             }
-        } catch (e: Exception) {
-            println("Error loading libraries: ${e.message}")
-            e.printStackTrace()
         }
     }
 
     fun signOut() = repo.signOut()
 
     fun updateSearchQuery(query: String) {
+        searchJob?.cancel()
+        
+        _booksUiState.update { it.copy(searchQuery = query) }
         _searchQuery.value = query
-        filterBooks(query)
-        
-        // Update books UI state with search query
-        _booksUiState.update { state ->
-            val allBooks = _allBooksList.value
-            val filteredBooks = if (query.isBlank()) {
-                allBooks
-            } else {
-                val lowercaseQuery = query.lowercase()
-                allBooks.filter { book ->
-                    book.title.lowercase().contains(lowercaseQuery) ||
-                    book.author.lowercase().contains(lowercaseQuery)
-                }
+
+        if (query.isBlank()) {
+            _booksUiState.update { 
+                it.copy(
+                    currentPage = 1,
+                    hasMoreBooks = true,
+                    books = emptyList()
+                )
             }
-            state.copy(
-                searchQuery = query,
-                books = filteredBooks
-            )
+            loadMoreBooks(isFirstLoad = true)
+            return
         }
         
-        // Keep legacy filtered list in sync
-        _filteredAllBooksList.value = _booksUiState.value.books
-    }
-
-    private fun filterBooks(query: String) {
-        if (query.isBlank()) {
-            _filteredBooksList.value = _booksList.value
-            return
-        }
-
-        val lowercaseQuery = query.lowercase()
-        _filteredBooksList.value = _booksList.value.filter { book ->
-            book.title.lowercase().contains(lowercaseQuery) ||
-                    book.author.lowercase().contains(lowercaseQuery)
-        }
-    }
-
-    private fun filterAllBooks(query: String) {
-        if (query.isBlank()) {
-            _filteredAllBooksList.value = _allBooksList.value
-            return
-        }
-
-        val lowercaseQuery = query.lowercase()
-        _filteredAllBooksList.value = _allBooksList.value.filter { book ->
-            book.title.lowercase().contains(lowercaseQuery) ||
-                    book.author.lowercase().contains(lowercaseQuery)
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY)
+            
+            _booksUiState.update {
+                it.copy(isLoading = true, error = null, books = emptyList())
+            }
+            
+            try {
+                val searchResults = librareaseRepo.getBooksPaginated(PAGE_SIZE, 1, query)
+                
+                _booksUiState.update { state ->
+                    state.copy(
+                        books = searchResults,
+                        isLoading = false,
+                        hasMoreBooks = searchResults.size >= PAGE_SIZE,
+                        currentPage = 2
+                    )
+                }
+                
+                _allBooksList.value = searchResults
+                _filteredAllBooksList.value = searchResults
+                _isLoading.value = false
+                
+            } catch (e: Exception) {
+                _booksUiState.update { 
+                    it.copy(
+                        isLoading = false,
+                        error = e.message ?: "Search failed"
+                    )
+                }
+                _isLoading.value = false
+            }
         }
     }
     

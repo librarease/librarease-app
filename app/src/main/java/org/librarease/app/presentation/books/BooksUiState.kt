@@ -2,10 +2,6 @@ package org.librarease.app.presentation.books
 
 import org.librarease.app.domain.model.BookItem
 
-/**
- * Immutable UI state for All Books Screen
- * Following data flow best practices with single source of truth
- */
 data class BooksUiState(
     val books: List<BookItem> = emptyList(),
     val isLoading: Boolean = false,
