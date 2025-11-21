@@ -70,6 +70,7 @@ class MainViewModel @Inject constructor(
 
     init {
         getAuthState()
+        loadLibraries() // Load cached libraries immediately on init
     }
 
     private fun getAuthState() = viewModelScope.launch {
@@ -167,14 +168,14 @@ class MainViewModel @Inject constructor(
     }
 
     fun loadLibraries() {
-        if (_libraryList.value.isEmpty()) {
-            viewModelScope.launch {
-                try {
-                    val libraries = librareaseRepo.getLibraries(null)
-                    _libraryList.value = libraries
-                } catch (e: Exception) {
-                    Log.e("MainViewModel", "Error loading libraries", e)
-                }
+        // Always use cached data if available - no loading screen on subsequent visits
+        viewModelScope.launch {
+            try {
+                val libraries = librareaseRepo.getLibraries(null)
+                _libraryList.value = libraries
+            } catch (e: Exception) {
+                // Keep showing cached data even if refresh fails
+                Log.e("MainViewModel", "Error loading libraries", e)
             }
         }
     }

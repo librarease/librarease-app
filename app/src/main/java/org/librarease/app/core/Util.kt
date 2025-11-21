@@ -8,6 +8,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.QrCode2
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.google.zxing.BarcodeFormat
@@ -40,9 +42,24 @@ fun generateQrCode(content: String, size: Int = 512): Bitmap {
     return bitmap
 }
 
-sealed class MainNavItem(val label: String, val icon: ImageVector, val route: String) {
-    object Home: MainNavItem("Home", Icons.Filled.Home, "home")
-    object Settings: MainNavItem("Settings", Icons.Filled.Settings, "settings")
+sealed class MainNavItem(
+    val label: String, 
+    val selectedIcon: ImageVector,
+    val unselectedIcon: ImageVector,
+    val route: String
+) {
+    object Home: MainNavItem(
+        "Home", 
+        Icons.Filled.Home,
+        Icons.Outlined.Home,
+        "home"
+    )
+    object Settings: MainNavItem(
+        "Settings", 
+        Icons.Filled.Settings,
+        Icons.Outlined.Settings,
+        "settings"
+    )
 
     companion object {
         val items = listOf(Home, Settings)

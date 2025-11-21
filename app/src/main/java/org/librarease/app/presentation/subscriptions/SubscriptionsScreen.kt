@@ -80,8 +80,17 @@ fun SubscriptionsScreen(
                             subscriptions = subscriptions,
                             onClick = { subscription -> onSubscriptionClick(subscription.id) }
                         )
-                    } else {
+                    } else if (!state.isRefreshing) {
+                        // Only show empty state if not refreshing
                         EmptySubscriptionsContent()
+                    } else {
+                        // Show loading while fetching first time
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
                     }
                 }
 

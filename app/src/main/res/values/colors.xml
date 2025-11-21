@@ -5,4 +5,5 @@
     <color name="text">#FF09090b</color>
     <color name="white">#FFFFFFFF</color>
     <color name="background">#F5F5F0</color>
+    <color name="gray">#F2F0EF</color>
 </resources>

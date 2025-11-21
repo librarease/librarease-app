@@ -20,15 +20,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.librarease.app.R
 import org.librarease.app.domain.model.CategoryItem
 import org.librarease.app.presentation.main.components.MainAppBar
-import org.librarease.app.presentation.main.components.MainBottomNavBar
-import org.librarease.app.presentation.main.components.MainContent
 import org.librarease.app.presentation.main.components.NewMainContent
 import org.librarease.app.presentation.navigation.Route
-import org.librarease.app.presentation.profile.ProfileScreen
 
 @Composable
 fun MainScreen(

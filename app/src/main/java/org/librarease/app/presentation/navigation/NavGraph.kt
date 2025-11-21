@@ -89,9 +89,8 @@ fun AppNavGraph(
             val viewModel: MainViewModel = hiltViewModel()
             val libraryList by viewModel.libraryList.collectAsState()
             
-            LaunchedEffect(Unit) {
-                viewModel.loadLibraries()
-            }
+            // No need for LaunchedEffect - libraries are loaded on ViewModel init
+            // and cached data is shown immediately
             
             LibraryListScreen(
                 libraryList = libraryList,

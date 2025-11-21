@@ -16,14 +16,14 @@ fun MainBottomNavBar(
     onItemSelected: (String) -> Unit
 ) {
     NavigationBar(
-        containerColor = Color.White
+        containerColor = MaterialTheme.colorScheme.background
     ) {
         MainNavItem.items.forEach { item ->
             val selected = selectedRoute == item.route
             NavigationBarItem(
                 icon = {
                     Icon(
-                        imageVector = item.icon,
+                        imageVector = item.selectedIcon,
                         contentDescription = item.label
                     )
                 },
