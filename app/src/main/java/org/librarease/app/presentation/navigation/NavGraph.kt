@@ -2,10 +2,8 @@ package org.librarease.app.presentation.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -15,25 +13,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import org.librarease.app.domain.model.Library
 import org.librarease.app.presentation.auth.forgot_psw.ForgotPasswordScreen
 import org.librarease.app.presentation.auth.forgot_psw.ForgotPasswordViewModel
 import org.librarease.app.presentation.auth.sign_in.SignInScreen
-import org.librarease.app.presentation.auth.sign_in.SignInViewModel
 import org.librarease.app.presentation.auth.sign_up.SignUpScreen
-import org.librarease.app.presentation.auth.sign_up.SignUpViewModel
-import org.librarease.app.presentation.auth.verify_email.VerifyEmailScreen
-import org.librarease.app.presentation.auth.verify_email.VerifyEmailViewModel
 import org.librarease.app.presentation.book_detail.BookDetailScreen
 import org.librarease.app.presentation.books.AllBooksScreen
 import org.librarease.app.presentation.borrowings.BorrowingsPlaceholderScreen
-import org.librarease.app.presentation.libraries.LibrariesPlaceholderScreen
 import org.librarease.app.presentation.library_detail.LibraryDetailScreen
 import org.librarease.app.presentation.library_detail.components.LibraryListScreen
 import org.librarease.app.presentation.main.MainScreen
 import org.librarease.app.presentation.main.MainViewModel
-import org.librarease.app.presentation.profile.ProfileScreen
-import org.librarease.app.presentation.profile.ProfileViewmodel
 import org.librarease.app.presentation.subscriptions.SubscriptionQRScreen
 import org.librarease.app.presentation.subscriptions.SubscriptionsScreen
 
@@ -88,10 +78,7 @@ fun AppNavGraph(
         composable(Route.Libraries.route) {
             val viewModel: MainViewModel = hiltViewModel()
             val libraryList by viewModel.libraryList.collectAsState()
-            
-            // No need for LaunchedEffect - libraries are loaded on ViewModel init
-            // and cached data is shown immediately
-            
+
             LibraryListScreen(
                 libraryList = libraryList,
                 onLibraryClick = { library ->
